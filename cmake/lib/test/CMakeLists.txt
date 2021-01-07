@@ -1,5 +1,4 @@
-add_test(
-    NAME TestMePrint
-    COMMAND ${CMAKE_COMMAND} -P "unittests_me_print.cmake"
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-)
+include(${CMAKE_CURRENT_SOURCE_DIR}/../src/me_add_cmake_test.cmake)
+
+me_add_cmake_test(unittests_me_print.cmake)
+me_add_cmake_test(unittests_me_artifact.cmake)
