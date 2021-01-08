@@ -1,7 +1,6 @@
-include(me_cmake_test)
+include(me_print) # include DUT
 
-# include DUT
-include(me_print)
+include(me_cmake_test) # me_cmake_test_*() functions
 
 # prepare mocks
 macro(me_print)

@@ -6,6 +6,7 @@ macro(me_mock_trace function_name)
   set(ME_MOCK_TRACING_RECORD
       ${ME_MOCK_TRACING_RECORD}
       PARENT_SCOPE)
+  message(TRACE "  !: ${function_name}(${_parameters})")
 endmacro()
 
 function(me_mock_expect function_name)
@@ -14,6 +15,7 @@ function(me_mock_expect function_name)
   set(ME_MOCK_TRACING_EXPECTATION
       ${ME_MOCK_TRACING_EXPECTATION}
       PARENT_SCOPE)
+  message(TRACE "  ?: ${function_name}(${_parameters})")
 endfunction()
 
 function(me_mock_reset)
@@ -27,10 +29,8 @@ endfunction()
 
 function(me_mock_check_expectations)
   if(ME_MOCK_TRACING_RECORD STREQUAL ME_MOCK_TRACING_EXPECTATION)
-    message(STATUS "  Succeeded")
+    message(STATUS "  Success")
   else()
-    message(STATUS "  Recorded: " ${ME_MOCK_TRACING_RECORD})
-    message(STATUS "  Expected: " ${ME_MOCK_TRACING_EXPECTATION})
-    message(FATAL_ERROR "  Failed")
+    message(FATAL_ERROR "  Fail")
   endif()
 endfunction()
