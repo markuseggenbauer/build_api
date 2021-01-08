@@ -59,7 +59,7 @@ function(me_add_unit target)
     target_link_libraries(${target} PRIVATE ${PARAMETER_SOURCE_DEPENDS})
   endif()
 
-  set_target_properties(${target} PROPERTY POSITION_INDEPENDENT_CODE ON)
+  set_target_properties(${target} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 endfunction()
 
