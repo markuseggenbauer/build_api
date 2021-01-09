@@ -94,3 +94,9 @@ function(me_add_executable target)
   endif()
 
 endfunction()
+
+function(me_add_unittest unit_name)
+  me_add_executable(unittest.${unit_name} ${ARGN})
+  target_link_libraries(unittest.${unit_name} PRIVATE ${unit_name})
+  add_test(unittest.${unit_name} unittest.${unit_name})
+endfunction()
