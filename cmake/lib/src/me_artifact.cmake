@@ -95,6 +95,20 @@ function(me_add_executable target)
 
 endfunction()
 
+function(me_add_library target)
+  cmake_parse_arguments("PARAMETER" "" "" "CONTAINS" ${ARGN})
+
+  me_print(STATUS "Library: ${target}")
+  me_print_list(LOG_TYPE VERBOSE CAPTION "  CONTAINS:" ${PARAMETER_CONTAINS})
+
+  add_library(${target} SHARED ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
+
+  if(PARAMETER_CONTAINS)
+    target_link_libraries(${target} PUBLIC ${PARAMETER_CONTAINS})
+  endif()
+
+endfunction()
+
 function(me_add_unittest unit_name)
   me_add_executable(unittest.${unit_name} ${ARGN})
   target_link_libraries(unittest.${unit_name} PRIVATE ${unit_name})
