@@ -7,7 +7,7 @@ me_cmake_test_begin(test_me_add_unit_empty)
 
 me_mock_expect(me_print STATUS "Unit: TestUnit")
 me_mock_expect(add_library TestUnit OBJECT ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
-me_mock_expect(set_target_properties TestUnit PROPERTY
+me_mock_expect(set_target_properties TestUnit PROPERTIES
                POSITION_INDEPENDENT_CODE ON)
 
 me_add_unit(TestUnit)
@@ -29,7 +29,7 @@ me_mock_expect(
 me_mock_expect(me_print_list LOG_TYPE VERBOSE CAPTION "  INTERFACE_DEPENDS:")
 me_mock_expect(add_library TestUnit OBJECT ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
 me_mock_expect(target_include_directories TestUnit PUBLIC .)
-me_mock_expect(set_target_properties TestUnit PROPERTY
+me_mock_expect(set_target_properties TestUnit PROPERTIES
                POSITION_INDEPENDENT_CODE ON)
 
 me_add_unit(TestUnit INTERFACES Interface1.hpp Interface2.hpp)
@@ -51,7 +51,7 @@ me_mock_expect(
 me_mock_expect(me_print_list LOG_TYPE VERBOSE CAPTION "  INTERFACE_DEPENDS:")
 me_mock_expect(add_library TestUnit OBJECT ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
 me_mock_expect(target_include_directories TestUnit PUBLIC subdir)
-me_mock_expect(set_target_properties TestUnit PROPERTY
+me_mock_expect(set_target_properties TestUnit PROPERTIES
                POSITION_INDEPENDENT_CODE ON)
 
 me_add_unit(TestUnit INTERFACE_DIR subdir INTERFACES Interface1.hpp
@@ -74,7 +74,7 @@ me_mock_expect(
   InterfaceB)
 me_mock_expect(add_library TestUnit OBJECT ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
 me_mock_expect(target_link_libraries TestUnit PUBLIC InterfaceA InterfaceB)
-me_mock_expect(set_target_properties TestUnit PROPERTY
+me_mock_expect(set_target_properties TestUnit PROPERTIES
                POSITION_INDEPENDENT_CODE ON)
 
 me_add_unit(TestUnit INTERFACE_DEPENDS InterfaceA InterfaceB)
@@ -96,7 +96,7 @@ me_mock_expect(
 me_mock_expect(me_print_list LOG_TYPE VERBOSE CAPTION "  SOURCE_DEPENDS:")
 me_mock_expect(add_library TestUnit OBJECT ./Source1.cpp ./Source2.cpp)
 me_mock_expect(target_include_directories TestUnit PRIVATE .)
-me_mock_expect(set_target_properties TestUnit PROPERTY
+me_mock_expect(set_target_properties TestUnit PROPERTIES
                POSITION_INDEPENDENT_CODE ON)
 
 me_add_unit(TestUnit SOURCES Source1.cpp Source2.cpp)
@@ -119,7 +119,7 @@ me_mock_expect(me_print_list LOG_TYPE VERBOSE CAPTION "  SOURCE_DEPENDS:")
 me_mock_expect(add_library TestUnit OBJECT subdir/Source1.cpp
                subdir/Source2.cpp)
 me_mock_expect(target_include_directories TestUnit PRIVATE subdir)
-me_mock_expect(set_target_properties TestUnit PROPERTY
+me_mock_expect(set_target_properties TestUnit PROPERTIES
                POSITION_INDEPENDENT_CODE ON)
 
 me_add_unit(TestUnit SOURCE_DIR subdir SOURCES Source1.cpp Source2.cpp)
@@ -150,7 +150,7 @@ me_mock_expect(add_library TestUnit OBJECT subdir/Source1.cpp
                subdir/Source2.cpp)
 me_mock_expect(target_include_directories TestUnit PRIVATE subdir)
 me_mock_expect(target_link_libraries TestUnit PRIVATE InterfaceA InterfaceB)
-me_mock_expect(set_target_properties TestUnit PROPERTY
+me_mock_expect(set_target_properties TestUnit PROPERTIES
                POSITION_INDEPENDENT_CODE ON)
 
 me_add_unit(
@@ -209,7 +209,7 @@ me_mock_expect(target_include_directories TestUnit PUBLIC isubdir)
 me_mock_expect(target_include_directories TestUnit PRIVATE ssubdir)
 me_mock_expect(target_link_libraries TestUnit PUBLIC iInterfaceA iInterfaceB)
 me_mock_expect(target_link_libraries TestUnit PRIVATE sInterfaceA sInterfaceB)
-me_mock_expect(set_target_properties TestUnit PROPERTY
+me_mock_expect(set_target_properties TestUnit PROPERTIES
                POSITION_INDEPENDENT_CODE ON)
 
 me_add_unit(
