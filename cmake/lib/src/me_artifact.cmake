@@ -64,33 +64,15 @@ function(me_add_unit target)
 endfunction()
 
 function(me_add_executable target)
-  cmake_parse_arguments("PARAMETER" "" "SOURCE_DIR" "SOURCES;DEPENDS" ${ARGN})
+  cmake_parse_arguments("PARAMETER" "" "" "CONTAINS" ${ARGN})
 
   me_print(STATUS "Executable: ${target}")
+  me_print_list(LOG_TYPE VERBOSE CAPTION "  CONTAINS:" ${PARAMETER_CONTAINS})
 
-  if(PARAMETER_SOURCES)
-    if(NOT PARAMETER_SOURCE_DIR)
-      set(PARAMETER_SOURCE_DIR ".")
-    endif()
+  add_executable(${target} ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
 
-    list(TRANSFORM PARAMETER_SOURCES PREPEND "${PARAMETER_SOURCE_DIR}/")
-
-    me_print(VERBOSE "  SOURCE_DIR: ${PARAMETER_SOURCE_DIR}")
-    me_print_list(LOG_TYPE VERBOSE CAPTION "  SOURCES:" ${PARAMETER_SOURCES})
-  else()
-    set(PARAMETER_SOURCES ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
-  endif()
-
-  me_print_list(LOG_TYPE VERBOSE CAPTION "  DEPENDS:" ${PARAMETER_DEPENDS})
-
-  add_executable(${target} ${PARAMETER_SOURCES})
-
-  if(PARAMETER_SOURCE_DIR)
-    target_include_directories(${target} PRIVATE ${PARAMETER_SOURCE_DIR})
-  endif()
-
-  if(PARAMETER_DEPENDS)
-    target_link_libraries(${target} PRIVATE ${PARAMETER_DEPENDS})
+  if(PARAMETER_CONTAINS)
+    target_link_libraries(${target} PRIVATE ${PARAMETER_CONTAINS})
   endif()
 
 endfunction()
@@ -110,7 +92,38 @@ function(me_add_library target)
 endfunction()
 
 function(me_add_unittest unit_name)
-  me_add_executable(unittest.${unit_name} ${ARGN})
-  target_link_libraries(unittest.${unit_name} PRIVATE ${unit_name})
-  add_test(unittest.${unit_name} unittest.${unit_name})
+  cmake_parse_arguments(
+    "UPARAMETER" "" "INTERFACE_DIR;SOURCE_DIR"
+    "INTERFACES;INTERFACE_DEPENDS;SOURCES;SOURCE_DEPENDS" ${ARGN})
+
+  if(UPARAMETER_INTERFACE_DIR)
+    list(APPEND UPARAMETERS INTERFACE_DIR ${UPARAMETER_INTERFACE_DIR})
+  endif()
+  if(UPARAMETER_SOURCE_DIR)
+    list(APPEND UPARAMETERS SOURCE_DIR ${UPARAMETER_SOURCE_DIR})
+  endif()
+  if(UPARAMETER_INTERFACES)
+    list(APPEND UPARAMETERS INTERFACES ${UPARAMETER_INTERFACES})
+  endif()
+  if(UPARAMETER_INTERFACE_DEPENDS)
+    list(APPEND UPARAMETERS INTERFACE_DEPENDS ${UPARAMETER_INTERFACE_DEPENDS})
+  endif()
+  if(UPARAMETER_SOURCES)
+    list(APPEND UPARAMETERS SOURCES ${UPARAMETER_SOURCES})
+  endif()
+  if(UPARAMETER_SOURCE_DEPENDS)
+    list(APPEND UPARAMETERS SOURCE_DEPENDS ${UPARAMETER_SOURCE_DEPENDS})
+  else()
+    list(APPEND UPARAMETERS SOURCE_DEPENDS)
+  endif()
+  list(APPEND UPARAMETERS ${unit_name})
+
+  me_add_unit(unit_unittest_${unit_name} ${UPARAMETERS})
+
+  cmake_parse_arguments("EPARAMETER" "" "" "CONTAINS" ${ARGN})
+
+  me_add_executable(unittest_${unit_name} CONTAINS ${unit_name}
+                    unit_unittest_${unit_name} ${EPARAMETER_CONTAINS})
+
+  add_test(unittest_${unit_name} unittest_${unit_name})
 endfunction()
