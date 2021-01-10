@@ -25,6 +25,10 @@ macro(target_include_directories)
   me_mock_trace(target_include_directories ${ARGN})
 endmacro()
 
+macro(get_property)
+  me_mock_trace(get_property ${ARGN})
+endmacro()
+
 include(me_cmake_test) # me_cmake_test_*() functions
 
 me_cmake_test_begin(test_me_add_library)
@@ -40,6 +44,14 @@ me_mock_expect(
   Unit_2)
 me_mock_expect(add_library TestLibrary SHARED ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
 me_mock_expect(target_link_libraries TestLibrary PUBLIC Unit_1 Unit_2)
+me_mock_expect(get_property ME_CONTAINS_PUBLIC_VALUE TARGET Unit_1 PROPERTY
+               ME_CONTAINS_PUBLIC)
+me_mock_expect(get_property ME_CONTAINS_PRIVATE_VALUE TARGET Unit_1 PROPERTY
+               ME_CONTAINS_PRIVATE)
+me_mock_expect(get_property ME_CONTAINS_PUBLIC_VALUE TARGET Unit_2 PROPERTY
+               ME_CONTAINS_PUBLIC)
+me_mock_expect(get_property ME_CONTAINS_PRIVATE_VALUE TARGET Unit_2 PROPERTY
+               ME_CONTAINS_PRIVATE)
 
 me_add_library(TestLibrary CONTAINS Unit_1 Unit_2)
 

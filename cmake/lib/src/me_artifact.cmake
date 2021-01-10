@@ -65,6 +65,74 @@ function(me_add_unit target)
 
 endfunction()
 
+function(me_add_component target)
+  cmake_parse_arguments("PARAMETER" "" "" "CONTAINS;CONTAINS_PRIVATE" ${ARGN})
+
+  me_print(STATUS "Component: ${target}")
+  me_print_list(LOG_TYPE VERBOSE CAPTION "  CONTAINS:" ${PARAMETER_CONTAINS})
+  me_print_list(LOG_TYPE VERBOSE CAPTION "  CONTAINS_PRIVATE:"
+                ${PARAMETER_CONTAINS_PRIVATE})
+
+  add_library(${target} OBJECT ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
+
+  if(PARAMETER_CONTAINS)
+    target_link_libraries(${target} PUBLIC ${PARAMETER_CONTAINS})
+    set_property(
+      TARGET ${target}
+      APPEND
+      PROPERTY ME_CONTAINS_PUBLIC ${PARAMETER_CONTAINS})
+  endif()
+
+  if(PARAMETER_CONTAINS_PRIVATE)
+    target_link_libraries(${target} PRIVATE ${PARAMETER_CONTAINS_PRIVATE})
+    set_property(
+      TARGET ${target}
+      APPEND
+      PROPERTY ME_CONTAINS_PRIVATE ${PARAMETER_CONTAINS_PRIVATE})
+  endif()
+
+  foreach(CONTAINED_ITEM IN ITEMS ${PARAMETER_CONTAINS})
+    get_property(
+      ME_CONTAINS_PUBLIC_VALUE
+      TARGET ${CONTAINED_ITEM}
+      PROPERTY ME_CONTAINS_PUBLIC)
+
+    if(ME_CONTAINS_PUBLIC_VALUE)
+      target_link_libraries(${target} PUBLIC ${ME_CONTAINS_PUBLIC_VALUE})
+    endif()
+
+    get_property(
+      ME_CONTAINS_PRIVATE_VALUE
+      TARGET ${CONTAINED_ITEM}
+      PROPERTY ME_CONTAINS_PRIVATE)
+
+    if(ME_CONTAINS_PRIVATE_VALUE)
+      target_link_libraries(${target} PRIVATE ${ME_CONTAINS_PRIVATE_VALUE})
+    endif()
+  endforeach()
+
+  foreach(CONTAINED_ITEM IN ITEMS ${PARAMETER_CONTAINS_PRIVATE})
+    get_property(
+      ME_CONTAINS_PUBLIC_VALUE
+      TARGET ${CONTAINED_ITEM}
+      PROPERTY ME_CONTAINS_PUBLIC)
+
+    if(ME_CONTAINS_PUBLIC_VALUE)
+      target_link_libraries(${target} PRIVATE ${ME_CONTAINS_PUBLIC_VALUE})
+    endif()
+
+    get_property(
+      ME_CONTAINS_PRIVATE_VALUE
+      TARGET ${CONTAINED_ITEM}
+      PROPERTY ME_CONTAINS_PRIVATE)
+
+    if(ME_CONTAINS_PRIVATE_VALUE)
+      target_link_libraries(${target} PRIVATE ${ME_CONTAINS_PRIVATE_VALUE})
+    endif()
+  endforeach()
+
+endfunction()
+
 function(me_add_executable target)
   cmake_parse_arguments("PARAMETER" "" "" "CONTAINS" ${ARGN})
 
@@ -76,6 +144,27 @@ function(me_add_executable target)
   if(PARAMETER_CONTAINS)
     target_link_libraries(${target} PRIVATE ${PARAMETER_CONTAINS})
   endif()
+
+  foreach(CONTAINED_ITEM IN ITEMS ${PARAMETER_CONTAINS})
+    get_property(
+      ME_CONTAINS_PUBLIC_VALUE
+      TARGET ${CONTAINED_ITEM}
+      PROPERTY ME_CONTAINS_PUBLIC)
+
+    if(ME_CONTAINS_PUBLIC_VALUE)
+      target_link_libraries(${target} PUBLIC ${ME_CONTAINS_PUBLIC_VALUE})
+    endif()
+
+    get_property(
+      ME_CONTAINS_PRIVATE_VALUE
+      TARGET ${CONTAINED_ITEM}
+      PROPERTY ME_CONTAINS_PRIVATE)
+
+    if(ME_CONTAINS_PRIVATE_VALUE)
+      target_link_libraries(${target} PRIVATE ${ME_CONTAINS_PRIVATE_VALUE})
+    endif()
+
+  endforeach()
 
 endfunction()
 
@@ -90,6 +179,27 @@ function(me_add_library target)
   if(PARAMETER_CONTAINS)
     target_link_libraries(${target} PUBLIC ${PARAMETER_CONTAINS})
   endif()
+
+  foreach(CONTAINED_ITEM IN ITEMS ${PARAMETER_CONTAINS})
+    get_property(
+      ME_CONTAINS_PUBLIC_VALUE
+      TARGET ${CONTAINED_ITEM}
+      PROPERTY ME_CONTAINS_PUBLIC)
+
+    if(ME_CONTAINS_PUBLIC_VALUE)
+      target_link_libraries(${target} PUBLIC ${ME_CONTAINS_PUBLIC_VALUE})
+    endif()
+
+    get_property(
+      ME_CONTAINS_PRIVATE_VALUE
+      TARGET ${CONTAINED_ITEM}
+      PROPERTY ME_CONTAINS_PRIVATE)
+
+    if(ME_CONTAINS_PRIVATE_VALUE)
+      target_link_libraries(${target} PRIVATE ${ME_CONTAINS_PRIVATE_VALUE})
+    endif()
+
+  endforeach()
 
 endfunction()
 
