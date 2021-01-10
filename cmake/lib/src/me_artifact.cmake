@@ -60,6 +60,8 @@ function(me_add_unit target)
   endif()
 
   set_target_properties(${target} PROPERTIES POSITION_INDEPENDENT_CODE ON)
+  set_target_properties(${target} PROPERTIES CXX_STANDARD 17
+                                             CXX_STANDARD_REQUIRED ON)
 
 endfunction()
 
