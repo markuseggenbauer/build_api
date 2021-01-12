@@ -2,6 +2,19 @@ include_guard()
 
 include(me_print)
 
+define_property(
+  TARGET
+  PROPERTY ME_CONTAINS_PUBLIC
+  BRIEF_DOCS "Transitive link targets."
+  FULL_DOCS
+    "List of targets transitively integrated (linked against) by this target.")
+
+define_property(
+  TARGET
+  PROPERTY ME_CONTAINS_PRIVATE
+  BRIEF_DOCS "Link targets."
+  FULL_DOCS "List of targets integrated (linked against) by this target.")
+
 function(me_add_unit target)
   cmake_parse_arguments(
     "PARAMETER" "" "INTERFACE_DIR;SOURCE_DIR"
@@ -146,22 +159,27 @@ function(me_add_executable target)
   endif()
 
   foreach(CONTAINED_ITEM IN ITEMS ${PARAMETER_CONTAINS})
-    get_property(
-      ME_CONTAINS_PUBLIC_VALUE
-      TARGET ${CONTAINED_ITEM}
-      PROPERTY ME_CONTAINS_PUBLIC)
+    get_target_property(CONTAINED_ITEM_TARGET_TYPE ${CONTAINED_ITEM} TYPE)
+    if(CONTAINED_ITEM_TARGET_TYPE STREQUAL "OBJECT_LIBRARY")
 
-    if(ME_CONTAINS_PUBLIC_VALUE)
-      target_link_libraries(${target} PUBLIC ${ME_CONTAINS_PUBLIC_VALUE})
-    endif()
+      get_property(
+        ME_CONTAINS_PUBLIC_VALUE
+        TARGET ${CONTAINED_ITEM}
+        PROPERTY ME_CONTAINS_PUBLIC)
 
-    get_property(
-      ME_CONTAINS_PRIVATE_VALUE
-      TARGET ${CONTAINED_ITEM}
-      PROPERTY ME_CONTAINS_PRIVATE)
+      if(ME_CONTAINS_PUBLIC_VALUE)
+        target_link_libraries(${target} PUBLIC ${ME_CONTAINS_PUBLIC_VALUE})
+      endif()
 
-    if(ME_CONTAINS_PRIVATE_VALUE)
-      target_link_libraries(${target} PRIVATE ${ME_CONTAINS_PRIVATE_VALUE})
+      get_property(
+        ME_CONTAINS_PRIVATE_VALUE
+        TARGET ${CONTAINED_ITEM}
+        PROPERTY ME_CONTAINS_PRIVATE)
+
+      if(ME_CONTAINS_PRIVATE_VALUE)
+        target_link_libraries(${target} PRIVATE ${ME_CONTAINS_PRIVATE_VALUE})
+      endif()
+
     endif()
 
   endforeach()
@@ -181,24 +199,26 @@ function(me_add_library target)
   endif()
 
   foreach(CONTAINED_ITEM IN ITEMS ${PARAMETER_CONTAINS})
-    get_property(
-      ME_CONTAINS_PUBLIC_VALUE
-      TARGET ${CONTAINED_ITEM}
-      PROPERTY ME_CONTAINS_PUBLIC)
+    get_target_property(CONTAINED_ITEM_TARGET_TYPE ${CONTAINED_ITEM} TYPE)
+    if(CONTAINED_ITEM_TARGET_TYPE STREQUAL "OBJECT_LIBRARY")
+      get_property(
+        ME_CONTAINS_PUBLIC_VALUE
+        TARGET ${CONTAINED_ITEM}
+        PROPERTY ME_CONTAINS_PUBLIC)
 
-    if(ME_CONTAINS_PUBLIC_VALUE)
-      target_link_libraries(${target} PUBLIC ${ME_CONTAINS_PUBLIC_VALUE})
+      if(ME_CONTAINS_PUBLIC_VALUE)
+        target_link_libraries(${target} PUBLIC ${ME_CONTAINS_PUBLIC_VALUE})
+      endif()
+
+      get_property(
+        ME_CONTAINS_PRIVATE_VALUE
+        TARGET ${CONTAINED_ITEM}
+        PROPERTY ME_CONTAINS_PRIVATE)
+
+      if(ME_CONTAINS_PRIVATE_VALUE)
+        target_link_libraries(${target} PRIVATE ${ME_CONTAINS_PRIVATE_VALUE})
+      endif()
     endif()
-
-    get_property(
-      ME_CONTAINS_PRIVATE_VALUE
-      TARGET ${CONTAINED_ITEM}
-      PROPERTY ME_CONTAINS_PRIVATE)
-
-    if(ME_CONTAINS_PRIVATE_VALUE)
-      target_link_libraries(${target} PRIVATE ${ME_CONTAINS_PRIVATE_VALUE})
-    endif()
-
   endforeach()
 
 endfunction()
