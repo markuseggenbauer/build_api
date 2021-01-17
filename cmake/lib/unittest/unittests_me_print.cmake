@@ -4,7 +4,7 @@ include(me_cmake_test) # me_cmake_test_*() functions
 
 # prepare mocks
 macro(me_print)
-  me_mock_trace(me_print ${ARGN})
+  me_mock_trace(me_print ${ARGV})
 endmacro()
 
 # Testcases check no caption, items with default log-level

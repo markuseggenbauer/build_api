@@ -1,7 +1,7 @@
 include(me_mock)
 
 macro(define_property)
-  me_mock_trace(define_property ${ARGN})
+  me_mock_trace(define_property ${ARGV})
 endmacro()
 
 include(me_artifact) # include DUT
@@ -10,31 +10,31 @@ me_mock_reset()
 
 # setup mocks
 macro(me_print)
-  me_mock_trace(me_print ${ARGN})
+  me_mock_trace(me_print ${ARGV})
 endmacro()
 
 macro(me_print_list)
-  me_mock_trace(me_print_list ${ARGN})
+  me_mock_trace(me_print_list ${ARGV})
 endmacro()
 
 macro(add_library)
-  me_mock_trace(add_library ${ARGN})
+  me_mock_trace(add_library ${ARGV})
 endmacro()
 
 macro(target_link_libraries)
-  me_mock_trace(target_link_libraries ${ARGN})
+  me_mock_trace(target_link_libraries ${ARGV})
 endmacro()
 
 macro(set_target_properties)
-  me_mock_trace(set_target_properties ${ARGN})
+  me_mock_trace(set_target_properties ${ARGV})
 endmacro()
 
 macro(set_property)
-  me_mock_trace(set_property ${ARGN})
+  me_mock_trace(set_property ${ARGV})
 endmacro()
 
 macro(target_include_directories)
-  me_mock_trace(target_include_directories ${ARGN})
+  me_mock_trace(target_include_directories ${ARGV})
 endmacro()
 
 macro(get_property variable command_target target command_property property)
@@ -49,7 +49,7 @@ macro(get_property variable command_target target command_property property)
 endmacro()
 
 macro(set_property)
-  me_mock_trace(set_property ${ARGN})
+  me_mock_trace(set_property ${ARGV})
 endmacro()
 
 include(me_cmake_test)

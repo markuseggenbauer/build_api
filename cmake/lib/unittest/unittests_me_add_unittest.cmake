@@ -1,7 +1,7 @@
 include(me_mock)
 
 macro(define_property)
-  me_mock_trace(define_property ${ARGN})
+  me_mock_trace(define_property ${ARGV})
 endmacro()
 
 include(me_artifact) # include DUT
@@ -10,19 +10,19 @@ me_mock_reset()
 
 # setup mocks
 macro(me_add_unit)
-  me_mock_trace(me_add_unit ${ARGN})
+  me_mock_trace(me_add_unit ${ARGV})
 endmacro()
 
 macro(me_add_executable)
-  me_mock_trace(me_add_executable ${ARGN})
+  me_mock_trace(me_add_executable ${ARGV})
 endmacro()
 
 macro(add_test)
-  me_mock_trace(add_test ${ARGN})
+  me_mock_trace(add_test ${ARGV})
 endmacro()
 
 macro(define_property)
-  me_mock_trace(define_property ${ARGN})
+  me_mock_trace(define_property ${ARGV})
 endmacro()
 
 include(me_cmake_test)
