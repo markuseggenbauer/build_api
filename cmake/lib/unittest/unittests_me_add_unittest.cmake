@@ -1,5 +1,3 @@
-include(me_artifact) # include DUT
-
 include(me_cmake_test) # me_cmake_test_*() functions
 
 # setup mocks
@@ -15,7 +13,11 @@ macro(add_test)
   me_mock_trace(add_test ${ARGN})
 endmacro()
 
-include(me_cmake_test) # me_cmake_test_*() functions
+macro(define_property)
+  me_mock_trace(define_property ${ARGN})
+endmacro()
+
+include(me_artifact) # include DUT
 
 me_cmake_test_begin(test_me_add_unittest)
 

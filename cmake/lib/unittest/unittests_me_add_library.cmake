@@ -1,4 +1,4 @@
-include(me_artifact) # include DUT
+include(me_cmake_test) # me_cmake_test_*() functions
 
 # setup mocks
 macro(me_print)
@@ -29,7 +29,11 @@ macro(get_property)
   me_mock_trace(get_property ${ARGN})
 endmacro()
 
-include(me_cmake_test) # me_cmake_test_*() functions
+macro(define_property)
+  me_mock_trace(define_property ${ARGN})
+endmacro()
+
+include(me_artifact) # include DUT
 
 me_cmake_test_begin(test_me_add_library)
 

@@ -4,16 +4,9 @@ include(me_print)
 
 define_property(
   TARGET
-  PROPERTY ME_CONTAINS_PUBLIC
+  PROPERTY ME_LINK_TARGETS
   BRIEF_DOCS "Transitive link targets."
-  FULL_DOCS
-    "List of targets transitively integrated (linked against) by this target.")
-
-define_property(
-  TARGET
-  PROPERTY ME_CONTAINS_PRIVATE
-  BRIEF_DOCS "Link targets."
-  FULL_DOCS "List of targets integrated (linked against) by this target.")
+  FULL_DOCS "List of targets a transitive link dependency exists.")
 
 function(me_add_unit target)
   cmake_parse_arguments(
@@ -49,7 +42,7 @@ function(me_add_unit target)
     me_print_list(LOG_TYPE VERBOSE CAPTION "  SOURCES:" ${PARAMETER_SOURCES})
     me_print_list(LOG_TYPE VERBOSE CAPTION "  SOURCE_DEPENDS:"
                   ${PARAMETER_SOURCE_DEPENDS})
-
+    list(APPEND target_link_dependencies ${target})
   else()
     set(PARAMETER_SOURCES ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
   endif()
@@ -72,6 +65,26 @@ function(me_add_unit target)
     target_link_libraries(${target} PRIVATE ${PARAMETER_SOURCE_DEPENDS})
   endif()
 
+  foreach(dependency IN ITEMS ${PARAMETER_INTERFACE_DEPENDS}
+                              ${PARAMETER_SOURCE_DEPENDS})
+
+    get_property(
+      tmp_target_link_dependencies
+      TARGET ${dependency}
+      PROPERTY ME_LINK_TARGETS)
+    list(APPEND target_link_dependencies ${tmp_target_link_dependencies})
+
+  endforeach()
+
+  list(REMOVE_DUPLICATES target_link_dependencies)
+
+  if(target_link_dependencies)
+    set_property(
+      TARGET ${target}
+      APPEND
+      PROPERTY ME_LINK_TARGETS ${target_link_dependencies})
+  endif()
+
   set_target_properties(${target} PROPERTIES POSITION_INDEPENDENT_CODE ON)
   set_target_properties(${target} PROPERTIES CXX_STANDARD 17
                                              CXX_STANDARD_REQUIRED ON)
@@ -90,59 +103,27 @@ function(me_add_component target)
 
   if(PARAMETER_CONTAINS)
     target_link_libraries(${target} PUBLIC ${PARAMETER_CONTAINS})
+  endif()
+
+  foreach(dependency IN ITEMS ${PARAMETER_CONTAINS}
+                              ${PARAMETER_CONTAINS_PRIVATE})
+
+    get_property(
+      tmp_target_link_dependencies
+      TARGET ${dependency}
+      PROPERTY ME_LINK_TARGETS)
+    list(APPEND target_link_dependencies ${tmp_target_link_dependencies})
+
+  endforeach()
+
+  list(REMOVE_DUPLICATES target_link_dependencies)
+
+  if(target_link_dependencies)
     set_property(
       TARGET ${target}
       APPEND
-      PROPERTY ME_CONTAINS_PUBLIC ${PARAMETER_CONTAINS})
+      PROPERTY ME_LINK_TARGETS ${target_link_dependencies})
   endif()
-
-  if(PARAMETER_CONTAINS_PRIVATE)
-    target_link_libraries(${target} PRIVATE ${PARAMETER_CONTAINS_PRIVATE})
-    set_property(
-      TARGET ${target}
-      APPEND
-      PROPERTY ME_CONTAINS_PRIVATE ${PARAMETER_CONTAINS_PRIVATE})
-  endif()
-
-  foreach(CONTAINED_ITEM IN ITEMS ${PARAMETER_CONTAINS})
-    get_property(
-      ME_CONTAINS_PUBLIC_VALUE
-      TARGET ${CONTAINED_ITEM}
-      PROPERTY ME_CONTAINS_PUBLIC)
-
-    if(ME_CONTAINS_PUBLIC_VALUE)
-      target_link_libraries(${target} PUBLIC ${ME_CONTAINS_PUBLIC_VALUE})
-    endif()
-
-    get_property(
-      ME_CONTAINS_PRIVATE_VALUE
-      TARGET ${CONTAINED_ITEM}
-      PROPERTY ME_CONTAINS_PRIVATE)
-
-    if(ME_CONTAINS_PRIVATE_VALUE)
-      target_link_libraries(${target} PRIVATE ${ME_CONTAINS_PRIVATE_VALUE})
-    endif()
-  endforeach()
-
-  foreach(CONTAINED_ITEM IN ITEMS ${PARAMETER_CONTAINS_PRIVATE})
-    get_property(
-      ME_CONTAINS_PUBLIC_VALUE
-      TARGET ${CONTAINED_ITEM}
-      PROPERTY ME_CONTAINS_PUBLIC)
-
-    if(ME_CONTAINS_PUBLIC_VALUE)
-      target_link_libraries(${target} PRIVATE ${ME_CONTAINS_PUBLIC_VALUE})
-    endif()
-
-    get_property(
-      ME_CONTAINS_PRIVATE_VALUE
-      TARGET ${CONTAINED_ITEM}
-      PROPERTY ME_CONTAINS_PRIVATE)
-
-    if(ME_CONTAINS_PRIVATE_VALUE)
-      target_link_libraries(${target} PRIVATE ${ME_CONTAINS_PRIVATE_VALUE})
-    endif()
-  endforeach()
 
 endfunction()
 
@@ -154,35 +135,21 @@ function(me_add_executable target)
 
   add_executable(${target} ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
 
-  if(PARAMETER_CONTAINS)
-    target_link_libraries(${target} PRIVATE ${PARAMETER_CONTAINS})
-  endif()
+  foreach(dependency IN ITEMS ${PARAMETER_CONTAINS})
 
-  foreach(CONTAINED_ITEM IN ITEMS ${PARAMETER_CONTAINS})
-    get_target_property(CONTAINED_ITEM_TARGET_TYPE ${CONTAINED_ITEM} TYPE)
-    if(CONTAINED_ITEM_TARGET_TYPE STREQUAL "OBJECT_LIBRARY")
-
-      get_property(
-        ME_CONTAINS_PUBLIC_VALUE
-        TARGET ${CONTAINED_ITEM}
-        PROPERTY ME_CONTAINS_PUBLIC)
-
-      if(ME_CONTAINS_PUBLIC_VALUE)
-        target_link_libraries(${target} PUBLIC ${ME_CONTAINS_PUBLIC_VALUE})
-      endif()
-
-      get_property(
-        ME_CONTAINS_PRIVATE_VALUE
-        TARGET ${CONTAINED_ITEM}
-        PROPERTY ME_CONTAINS_PRIVATE)
-
-      if(ME_CONTAINS_PRIVATE_VALUE)
-        target_link_libraries(${target} PRIVATE ${ME_CONTAINS_PRIVATE_VALUE})
-      endif()
-
-    endif()
+    get_property(
+      tmp_target_link_dependencies
+      TARGET ${dependency}
+      PROPERTY ME_LINK_TARGETS)
+    list(APPEND target_link_dependencies ${tmp_target_link_dependencies})
 
   endforeach()
+
+  list(REMOVE_DUPLICATES target_link_dependencies)
+
+  if(target_link_dependencies)
+    target_link_libraries(${target} PRIVATE ${target_link_dependencies})
+  endif()
 
 endfunction()
 
@@ -194,32 +161,26 @@ function(me_add_library target)
 
   add_library(${target} SHARED ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
 
-  if(PARAMETER_CONTAINS)
-    target_link_libraries(${target} PUBLIC ${PARAMETER_CONTAINS})
+  foreach(dependency IN ITEMS ${PARAMETER_CONTAINS})
+
+    get_property(
+      tmp_target_link_dependencies
+      TARGET ${dependency}
+      PROPERTY ME_LINK_TARGETS)
+    list(APPEND target_link_dependencies ${tmp_target_link_dependencies})
+
+  endforeach()
+
+  list(REMOVE_DUPLICATES target_link_dependencies)
+
+  if(target_link_dependencies)
+    target_link_libraries(${target} PRIVATE ${target_link_dependencies})
   endif()
 
-  foreach(CONTAINED_ITEM IN ITEMS ${PARAMETER_CONTAINS})
-    get_target_property(CONTAINED_ITEM_TARGET_TYPE ${CONTAINED_ITEM} TYPE)
-    if(CONTAINED_ITEM_TARGET_TYPE STREQUAL "OBJECT_LIBRARY")
-      get_property(
-        ME_CONTAINS_PUBLIC_VALUE
-        TARGET ${CONTAINED_ITEM}
-        PROPERTY ME_CONTAINS_PUBLIC)
-
-      if(ME_CONTAINS_PUBLIC_VALUE)
-        target_link_libraries(${target} PUBLIC ${ME_CONTAINS_PUBLIC_VALUE})
-      endif()
-
-      get_property(
-        ME_CONTAINS_PRIVATE_VALUE
-        TARGET ${CONTAINED_ITEM}
-        PROPERTY ME_CONTAINS_PRIVATE)
-
-      if(ME_CONTAINS_PRIVATE_VALUE)
-        target_link_libraries(${target} PRIVATE ${ME_CONTAINS_PRIVATE_VALUE})
-      endif()
-    endif()
-  endforeach()
+  set_property(
+    TARGET ${target}
+    APPEND
+    PROPERTY ME_LINK_TARGETS ${target})
 
 endfunction()
 

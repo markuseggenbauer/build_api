@@ -1,0 +1,1 @@
+me_add_library(component_private_library CONTAINS component_private)
