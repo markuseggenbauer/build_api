@@ -8,6 +8,31 @@ define_property(
   BRIEF_DOCS "Transitive link targets."
   FULL_DOCS "List of targets a transitive link dependency exists.")
 
+function(me_derive_link_target_property target)
+  foreach(dependency IN ITEMS ${ARGN})
+
+    get_target_property(unit_type ${dependency} TYPE)
+    if(unit_type STREQUAL OBJECT_LIBRARY)
+      get_property(
+        tmp_target_link_dependencies
+        TARGET ${dependency}
+        PROPERTY ME_LINK_TARGETS)
+      list(APPEND target_link_dependencies ${tmp_target_link_dependencies})
+    endif()
+    list(APPEND target_link_dependencies ${dependency})
+
+  endforeach()
+
+  list(REMOVE_DUPLICATES target_link_dependencies)
+
+  if(target_link_dependencies)
+    set_property(
+      TARGET ${target}
+      APPEND
+      PROPERTY ME_LINK_TARGETS ${target_link_dependencies})
+  endif()
+endfunction()
+
 function(me_add_unit target)
   cmake_parse_arguments(
     "PARAMETER" "" "INTERFACE_DIR;SOURCE_DIR"
@@ -42,7 +67,6 @@ function(me_add_unit target)
     me_print_list(LOG_TYPE VERBOSE CAPTION "  SOURCES:" ${PARAMETER_SOURCES})
     me_print_list(LOG_TYPE VERBOSE CAPTION "  SOURCE_DEPENDS:"
                   ${PARAMETER_SOURCE_DEPENDS})
-    list(APPEND target_link_dependencies ${target})
   else()
     set(PARAMETER_SOURCES ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
   endif()
@@ -65,25 +89,8 @@ function(me_add_unit target)
     target_link_libraries(${target} PRIVATE ${PARAMETER_SOURCE_DEPENDS})
   endif()
 
-  foreach(dependency IN ITEMS ${PARAMETER_INTERFACE_DEPENDS}
-                              ${PARAMETER_SOURCE_DEPENDS})
-
-    get_property(
-      tmp_target_link_dependencies
-      TARGET ${dependency}
-      PROPERTY ME_LINK_TARGETS)
-    list(APPEND target_link_dependencies ${tmp_target_link_dependencies})
-
-  endforeach()
-
-  list(REMOVE_DUPLICATES target_link_dependencies)
-
-  if(target_link_dependencies)
-    set_property(
-      TARGET ${target}
-      APPEND
-      PROPERTY ME_LINK_TARGETS ${target_link_dependencies})
-  endif()
+  me_derive_link_target_property(${target} ${PARAMETER_INTERFACE_DEPENDS}
+                                 ${PARAMETER_SOURCE_DEPENDS})
 
   set_target_properties(${target} PROPERTIES POSITION_INDEPENDENT_CODE ON)
   set_target_properties(${target} PROPERTIES CXX_STANDARD 17
@@ -105,25 +112,8 @@ function(me_add_component target)
     target_link_libraries(${target} PUBLIC ${PARAMETER_CONTAINS})
   endif()
 
-  foreach(dependency IN ITEMS ${PARAMETER_CONTAINS}
-                              ${PARAMETER_CONTAINS_PRIVATE})
-
-    get_property(
-      tmp_target_link_dependencies
-      TARGET ${dependency}
-      PROPERTY ME_LINK_TARGETS)
-    list(APPEND target_link_dependencies ${tmp_target_link_dependencies})
-
-  endforeach()
-
-  list(REMOVE_DUPLICATES target_link_dependencies)
-
-  if(target_link_dependencies)
-    set_property(
-      TARGET ${target}
-      APPEND
-      PROPERTY ME_LINK_TARGETS ${target_link_dependencies})
-  endif()
+  me_derive_link_target_property(${target} ${PARAMETER_CONTAINS}
+                                 ${PARAMETER_CONTAINS_PRIVATE})
 
 endfunction()
 
@@ -135,21 +125,14 @@ function(me_add_executable target)
 
   add_executable(${target} ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
 
-  foreach(dependency IN ITEMS ${PARAMETER_CONTAINS})
+  me_derive_link_target_property(${target} ${PARAMETER_CONTAINS})
 
-    get_property(
-      tmp_target_link_dependencies
-      TARGET ${dependency}
-      PROPERTY ME_LINK_TARGETS)
-    list(APPEND target_link_dependencies ${tmp_target_link_dependencies})
+  get_property(
+    target_link_dependencies
+    TARGET ${target}
+    PROPERTY ME_LINK_TARGETS)
 
-  endforeach()
-
-  list(REMOVE_DUPLICATES target_link_dependencies)
-
-  if(target_link_dependencies)
-    target_link_libraries(${target} PRIVATE ${target_link_dependencies})
-  endif()
+  target_link_libraries(${target} PRIVATE ${target_link_dependencies})
 
 endfunction()
 
@@ -161,26 +144,14 @@ function(me_add_library target)
 
   add_library(${target} SHARED ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
 
-  foreach(dependency IN ITEMS ${PARAMETER_CONTAINS})
+  me_derive_link_target_property(${target} ${PARAMETER_CONTAINS})
 
-    get_property(
-      tmp_target_link_dependencies
-      TARGET ${dependency}
-      PROPERTY ME_LINK_TARGETS)
-    list(APPEND target_link_dependencies ${tmp_target_link_dependencies})
-
-  endforeach()
-
-  list(REMOVE_DUPLICATES target_link_dependencies)
-
-  if(target_link_dependencies)
-    target_link_libraries(${target} PRIVATE ${target_link_dependencies})
-  endif()
-
-  set_property(
+  get_property(
+    target_link_dependencies
     TARGET ${target}
-    APPEND
-    PROPERTY ME_LINK_TARGETS ${target})
+    PROPERTY ME_LINK_TARGETS)
+
+  target_link_libraries(${target} PRIVATE ${target_link_dependencies})
 
 endfunction()
 

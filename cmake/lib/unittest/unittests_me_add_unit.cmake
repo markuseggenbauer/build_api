@@ -40,6 +40,13 @@ macro(get_property variable command_target target command_property property)
   endif()
 endmacro()
 
+macro(get_target_property variable target property)
+  me_mock_trace(get_target_property ${target} ${property} ${ARGN})
+  if(get_target_property__${target}__${property})
+    set(${variable} ${get_target_property__${target}__${property}})
+  endif()
+endmacro()
+
 macro(set_property)
   me_mock_trace(set_property ${ARGV})
 endmacro()
@@ -145,8 +152,17 @@ me_mock_expect(
   InterfaceB)
 me_mock_expect(add_library TestUnit OBJECT ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
 me_mock_expect(target_link_libraries TestUnit PUBLIC InterfaceA InterfaceB)
-me_mock_expect(get_property TARGET InterfaceA PROPERTY ME_LINK_TARGETS)
-me_mock_expect(get_property TARGET InterfaceB PROPERTY ME_LINK_TARGETS)
+me_mock_expect(get_target_property InterfaceA TYPE)
+me_mock_expect(get_target_property InterfaceB TYPE)
+me_mock_expect(
+  set_property
+  TARGET
+  TestUnit
+  APPEND
+  PROPERTY
+  ME_LINK_TARGETS
+  InterfaceA
+  InterfaceB)
 me_mock_expect(set_target_properties TestUnit PROPERTIES
                POSITION_INDEPENDENT_CODE ON)
 me_mock_expect(
@@ -177,14 +193,6 @@ me_mock_expect(
 me_mock_expect(me_print_list LOG_TYPE VERBOSE CAPTION "  SOURCE_DEPENDS:")
 me_mock_expect(add_library TestUnit OBJECT ./Source1.cpp ./Source2.cpp)
 me_mock_expect(target_include_directories TestUnit PRIVATE .)
-me_mock_expect(
-  set_property
-  TARGET
-  TestUnit
-  APPEND
-  PROPERTY
-  ME_LINK_TARGETS
-  TestUnit)
 me_mock_expect(set_target_properties TestUnit PROPERTIES
                POSITION_INDEPENDENT_CODE ON)
 me_mock_expect(
@@ -216,14 +224,6 @@ me_mock_expect(me_print_list LOG_TYPE VERBOSE CAPTION "  SOURCE_DEPENDS:")
 me_mock_expect(add_library TestUnit OBJECT subdir/Source1.cpp
                subdir/Source2.cpp)
 me_mock_expect(target_include_directories TestUnit PRIVATE subdir)
-me_mock_expect(
-  set_property
-  TARGET
-  TestUnit
-  APPEND
-  PROPERTY
-  ME_LINK_TARGETS
-  TestUnit)
 me_mock_expect(set_target_properties TestUnit PROPERTIES
                POSITION_INDEPENDENT_CODE ON)
 me_mock_expect(
@@ -263,8 +263,8 @@ me_mock_expect(add_library TestUnit OBJECT subdir/Source1.cpp
                subdir/Source2.cpp)
 me_mock_expect(target_include_directories TestUnit PRIVATE subdir)
 me_mock_expect(target_link_libraries TestUnit PRIVATE InterfaceA InterfaceB)
-me_mock_expect(get_property TARGET InterfaceA PROPERTY ME_LINK_TARGETS)
-me_mock_expect(get_property TARGET InterfaceB PROPERTY ME_LINK_TARGETS)
+me_mock_expect(get_target_property InterfaceA TYPE)
+me_mock_expect(get_target_property InterfaceB TYPE)
 me_mock_expect(
   set_property
   TARGET
@@ -272,7 +272,9 @@ me_mock_expect(
   APPEND
   PROPERTY
   ME_LINK_TARGETS
-  TestUnit)
+  InterfaceA
+  InterfaceB)
+
 me_mock_expect(set_target_properties TestUnit PROPERTIES
                POSITION_INDEPENDENT_CODE ON)
 me_mock_expect(
@@ -340,10 +342,10 @@ me_mock_expect(target_include_directories TestUnit PUBLIC isubdir)
 me_mock_expect(target_include_directories TestUnit PRIVATE ssubdir)
 me_mock_expect(target_link_libraries TestUnit PUBLIC iInterfaceA iInterfaceB)
 me_mock_expect(target_link_libraries TestUnit PRIVATE sInterfaceA sInterfaceB)
-me_mock_expect(get_property TARGET iInterfaceA PROPERTY ME_LINK_TARGETS)
-me_mock_expect(get_property TARGET iInterfaceB PROPERTY ME_LINK_TARGETS)
-me_mock_expect(get_property TARGET sInterfaceA PROPERTY ME_LINK_TARGETS)
-me_mock_expect(get_property TARGET sInterfaceB PROPERTY ME_LINK_TARGETS)
+me_mock_expect(get_target_property iInterfaceA TYPE)
+me_mock_expect(get_target_property iInterfaceB TYPE)
+me_mock_expect(get_target_property sInterfaceA TYPE)
+me_mock_expect(get_target_property sInterfaceB TYPE)
 me_mock_expect(
   set_property
   TARGET
@@ -351,9 +353,10 @@ me_mock_expect(
   APPEND
   PROPERTY
   ME_LINK_TARGETS
-  TestUnit
-  subiInterfaceB
-  subsInterfaceA)
+  iInterfaceA
+  iInterfaceB
+  sInterfaceA
+  sInterfaceB)
 
 me_mock_expect(set_target_properties TestUnit PROPERTIES
                POSITION_INDEPENDENT_CODE ON)
@@ -365,9 +368,6 @@ me_mock_expect(
   17
   CXX_STANDARD_REQUIRED
   ON)
-
-set(get_property__TARGET__sInterfaceA__PROPERTY__ME_LINK_TARGETS subsInterfaceA)
-set(get_property__TARGET__iInterfaceB__PROPERTY__ME_LINK_TARGETS subiInterfaceB)
 
 me_add_unit(
   TestUnit
