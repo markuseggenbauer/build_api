@@ -6,8 +6,6 @@ endmacro()
 
 include(me_test) # include DUT
 
-me_mock_reset()
-
 # setup mocks
 macro(me_add_unit)
   me_mock_trace(me_add_unit ${ARGV})

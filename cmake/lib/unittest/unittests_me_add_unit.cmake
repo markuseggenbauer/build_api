@@ -6,8 +6,6 @@ endmacro()
 
 include(me_structure) # include DUT
 
-me_mock_reset()
-
 # setup mocks
 macro(me_print)
   me_mock_trace(me_print ${ARGV})

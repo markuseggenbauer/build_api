@@ -3,12 +3,10 @@ include_guard()
 include(me_print)
 include(me_internal)
 
-function(me_add_unit target)
+function(me_add_unit_internal target)
   cmake_parse_arguments(
-    "PARAMETER" "" "INTERFACE_DIR;SOURCE_DIR"
+    "PARAMETER" "" "INTERFACE_DIR;SOURCE_DIR;TYPE"
     "INTERFACES;INTERFACE_DEPENDS;SOURCES;SOURCE_DEPENDS" ${ARGN})
-
-  me_print(STATUS "Unit: ${target}")
 
   if(PARAMETER_INTERFACES OR PARAMETER_INTERFACE_DEPENDS)
 
@@ -66,6 +64,21 @@ function(me_add_unit target)
   set_target_properties(${target} PROPERTIES CXX_STANDARD 17
                                              CXX_STANDARD_REQUIRED ON)
 
+endfunction()
+
+function(me_add_unit target)
+  me_print(STATUS "Unit: ${target}")
+  me_add_unit_internal(${ARGV})
+endfunction()
+
+function(me_add_unit_interface target)
+  me_print(STATUS "Interface-Unit: ${target}")
+  me_add_unit_internal(${ARGV})
+endfunction()
+
+function(me_add_unit_implementation target)
+  me_print(STATUS "Implementation-Unit: ${target}")
+  me_add_unit_internal(${ARGV})
 endfunction()
 
 function(me_add_component target)
