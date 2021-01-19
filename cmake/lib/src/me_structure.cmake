@@ -74,28 +74,41 @@ endfunction()
 function(me_add_unit_interface target)
   me_print(STATUS "Interface-Unit: ${target}")
   me_add_unit_internal(${ARGV})
+  # TODO: add consistency check (WARNING) - must not depend (*_DEPENDS) on
+  # implementation units
 endfunction()
 
 function(me_add_unit_implementation target)
+  cmake_parse_arguments(
+    "PARAMETER" "" "INTERFACE_DIR;SOURCE_DIR;TYPE"
+    "INTERFACES;INTERFACE_DEPENDS;SOURCES;SOURCE_DEPENDS" ${ARGN})
   me_print(STATUS "Implementation-Unit: ${target}")
+
+  if(PARAMETER_INTERFACES
+     OR PARAMETER_INTERFACE_DIR
+     OR PARAMETER_INTERFACES)
+    me_print(FATAL_ERROR
+             "No interfaces must be defined for an implementation unit.")
+  endif()
+
   me_add_unit_internal(${ARGV})
 endfunction()
 
 function(me_add_component target)
-  cmake_parse_arguments("PARAMETER" "" "" "CONTAINS;CONTAINS_PRIVATE" ${ARGN})
+  cmake_parse_arguments("PARAMETER" "" "" "IMPLEMENTS;CONTAINS" ${ARGN})
 
   me_print(STATUS "Component: ${target}")
+  me_print_list(LOG_TYPE VERBOSE CAPTION "  IMPLEMENTS:"
+                ${PARAMETER_IMPLEMENTS})
   me_print_list(LOG_TYPE VERBOSE CAPTION "  CONTAINS:" ${PARAMETER_CONTAINS})
-  me_print_list(LOG_TYPE VERBOSE CAPTION "  CONTAINS_PRIVATE:"
-                ${PARAMETER_CONTAINS_PRIVATE})
 
   add_library(${target} OBJECT ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
 
   if(PARAMETER_CONTAINS)
-    target_link_libraries(${target} PUBLIC ${PARAMETER_CONTAINS})
+    target_link_libraries(${target} PUBLIC ${PARAMETER_IMPLEMENTS})
   endif()
 
-  me_derive_link_target_property(${target} ${PARAMETER_CONTAINS}
-                                 ${PARAMETER_CONTAINS_PRIVATE})
+  me_derive_link_target_property(${target} ${PARAMETER_IMPLEMENTS}
+                                 ${PARAMETER_CONTAINS})
 
 endfunction()
