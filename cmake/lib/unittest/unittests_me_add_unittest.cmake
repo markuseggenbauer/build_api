@@ -4,7 +4,7 @@ macro(define_property)
   me_mock_trace(define_property ${ARGV})
 endmacro()
 
-include(me_artifact) # include DUT
+include(me_test) # include DUT
 
 me_mock_reset()
 
