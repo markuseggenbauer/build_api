@@ -1,4 +1,4 @@
-include_guard()
+include_guard(GLOBAL)
 
 function(me_mock_trace function_name)
   string(REPLACE ";" "|" _parameters "${ARGN}")
