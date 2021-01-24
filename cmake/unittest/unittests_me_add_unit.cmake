@@ -57,7 +57,7 @@ include(me_cmake_test)
 
 me_cmake_test_begin(test_me_add_unit_empty)
 
-me_mock_expect(me_print STATUS "Unit: TestUnit")
+me_mock_expect(me_print STATUS "Generic-Unit: TestUnit")
 me_mock_expect(add_library TestUnit OBJECT ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
 me_mock_expect(set_target_properties TestUnit PROPERTIES
                POSITION_INDEPENDENT_CODE ON)
@@ -69,24 +69,26 @@ me_mock_expect(
   17
   CXX_STANDARD_REQUIRED
   ON)
+me_mock_expect(set_property TARGET TestUnit PROPERTY ME_COMPONENT_TYPE GENERIC)
 
 me_add_unit(TestUnit)
 
 me_cmake_test_end()
 
-me_cmake_test_begin(test_me_add_unit_interface)
+me_cmake_test_begin(test_me_add_interface_unit)
 
-me_mock_expect(me_print STATUS "Unit: TestUnit")
-me_mock_expect(me_print VERBOSE "  INTERFACE_DIR: .")
+me_mock_expect(me_print STATUS "Generic-Unit: TestUnit")
+me_mock_expect(me_print VERBOSE "  PUBLIC_HEADER_DIR: .")
 me_mock_expect(
   me_print_list
   LOG_TYPE
   VERBOSE
   CAPTION
-  "  INTERFACES:"
+  "  PUBLIC_HEADERS:"
   ./Interface1.hpp
   ./Interface2.hpp)
-me_mock_expect(me_print_list LOG_TYPE VERBOSE CAPTION "  INTERFACE_DEPENDS:")
+me_mock_expect(me_print_list LOG_TYPE VERBOSE CAPTION
+               "  PUBLIC_HEADER_DEPENDS:")
 me_mock_expect(add_library TestUnit OBJECT ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
 me_mock_expect(target_include_directories TestUnit PUBLIC .)
 me_mock_expect(set_target_properties TestUnit PROPERTIES
@@ -99,24 +101,26 @@ me_mock_expect(
   17
   CXX_STANDARD_REQUIRED
   ON)
+me_mock_expect(set_property TARGET TestUnit PROPERTY ME_COMPONENT_TYPE GENERIC)
 
-me_add_unit(TestUnit INTERFACES Interface1.hpp Interface2.hpp)
+me_add_unit(TestUnit PUBLIC_HEADERS Interface1.hpp Interface2.hpp)
 
 me_cmake_test_end()
 
-me_cmake_test_begin(test_me_add_unit_interface_dir)
+me_cmake_test_begin(test_me_add_interface_unit_dir)
 
-me_mock_expect(me_print STATUS "Unit: TestUnit")
-me_mock_expect(me_print VERBOSE "  INTERFACE_DIR: subdir")
+me_mock_expect(me_print STATUS "Generic-Unit: TestUnit")
+me_mock_expect(me_print VERBOSE "  PUBLIC_HEADER_DIR: subdir")
 me_mock_expect(
   me_print_list
   LOG_TYPE
   VERBOSE
   CAPTION
-  "  INTERFACES:"
+  "  PUBLIC_HEADERS:"
   subdir/Interface1.hpp
   subdir/Interface2.hpp)
-me_mock_expect(me_print_list LOG_TYPE VERBOSE CAPTION "  INTERFACE_DEPENDS:")
+me_mock_expect(me_print_list LOG_TYPE VERBOSE CAPTION
+               "  PUBLIC_HEADER_DEPENDS:")
 me_mock_expect(add_library TestUnit OBJECT ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
 me_mock_expect(target_include_directories TestUnit PUBLIC subdir)
 me_mock_expect(set_target_properties TestUnit PROPERTIES
@@ -129,23 +133,24 @@ me_mock_expect(
   17
   CXX_STANDARD_REQUIRED
   ON)
+me_mock_expect(set_property TARGET TestUnit PROPERTY ME_COMPONENT_TYPE GENERIC)
 
-me_add_unit(TestUnit INTERFACE_DIR subdir INTERFACES Interface1.hpp
+me_add_unit(TestUnit PUBLIC_HEADER_DIR subdir PUBLIC_HEADERS Interface1.hpp
             Interface2.hpp)
 
 me_cmake_test_end()
 
-me_cmake_test_begin(test_me_add_unit_interface_depends)
+me_cmake_test_begin(test_me_add_interface_unit_depends)
 
-me_mock_expect(me_print STATUS "Unit: TestUnit")
-me_mock_expect(me_print VERBOSE "  INTERFACE_DIR: ")
-me_mock_expect(me_print_list LOG_TYPE VERBOSE CAPTION "  INTERFACES:")
+me_mock_expect(me_print STATUS "Generic-Unit: TestUnit")
+me_mock_expect(me_print VERBOSE "  PUBLIC_HEADER_DIR: ")
+me_mock_expect(me_print_list LOG_TYPE VERBOSE CAPTION "  PUBLIC_HEADERS:")
 me_mock_expect(
   me_print_list
   LOG_TYPE
   VERBOSE
   CAPTION
-  "  INTERFACE_DEPENDS:"
+  "  PUBLIC_HEADER_DEPENDS:"
   InterfaceA
   InterfaceB)
 me_mock_expect(add_library TestUnit OBJECT ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
@@ -171,14 +176,15 @@ me_mock_expect(
   17
   CXX_STANDARD_REQUIRED
   ON)
+me_mock_expect(set_property TARGET TestUnit PROPERTY ME_COMPONENT_TYPE GENERIC)
 
-me_add_unit(TestUnit INTERFACE_DEPENDS InterfaceA InterfaceB)
+me_add_unit(TestUnit PUBLIC_HEADER_DEPENDS InterfaceA InterfaceB)
 
 me_cmake_test_end()
 
 me_cmake_test_begin(test_me_add_unit_source)
 
-me_mock_expect(me_print STATUS "Unit: TestUnit")
+me_mock_expect(me_print STATUS "Generic-Unit: TestUnit")
 me_mock_expect(me_print VERBOSE "  SOURCE_DIR: .")
 me_mock_expect(
   me_print_list
@@ -201,6 +207,7 @@ me_mock_expect(
   17
   CXX_STANDARD_REQUIRED
   ON)
+me_mock_expect(set_property TARGET TestUnit PROPERTY ME_COMPONENT_TYPE GENERIC)
 
 me_add_unit(TestUnit SOURCES Source1.cpp Source2.cpp)
 
@@ -208,7 +215,7 @@ me_cmake_test_end()
 
 me_cmake_test_begin(test_me_add_unit_source_dir)
 
-me_mock_expect(me_print STATUS "Unit: TestUnit")
+me_mock_expect(me_print STATUS "Generic-Unit: TestUnit")
 me_mock_expect(me_print VERBOSE "  SOURCE_DIR: subdir")
 me_mock_expect(
   me_print_list
@@ -232,6 +239,7 @@ me_mock_expect(
   17
   CXX_STANDARD_REQUIRED
   ON)
+me_mock_expect(set_property TARGET TestUnit PROPERTY ME_COMPONENT_TYPE GENERIC)
 
 me_add_unit(TestUnit SOURCE_DIR subdir SOURCES Source1.cpp Source2.cpp)
 
@@ -239,7 +247,7 @@ me_cmake_test_end()
 
 me_cmake_test_begin(test_me_add_unit_source_dir_depends)
 
-me_mock_expect(me_print STATUS "Unit: TestUnit")
+me_mock_expect(me_print STATUS "Generic-Unit: TestUnit")
 me_mock_expect(me_print VERBOSE "  SOURCE_DIR: subdir")
 me_mock_expect(
   me_print_list
@@ -283,6 +291,7 @@ me_mock_expect(
   17
   CXX_STANDARD_REQUIRED
   ON)
+me_mock_expect(set_property TARGET TestUnit PROPERTY ME_COMPONENT_TYPE GENERIC)
 
 me_add_unit(
   TestUnit
@@ -297,16 +306,16 @@ me_add_unit(
 
 me_cmake_test_end()
 
-me_cmake_test_begin(test_me_add_unit_interface_dir_depends_source_dir_depends)
+me_cmake_test_begin(test_me_add_interface_unit_dir_depends_source_dir_depends)
 
-me_mock_expect(me_print STATUS "Unit: TestUnit")
-me_mock_expect(me_print VERBOSE "  INTERFACE_DIR: isubdir")
+me_mock_expect(me_print STATUS "Generic-Unit: TestUnit")
+me_mock_expect(me_print VERBOSE "  PUBLIC_HEADER_DIR: isubdir")
 me_mock_expect(
   me_print_list
   LOG_TYPE
   VERBOSE
   CAPTION
-  "  INTERFACES:"
+  "  PUBLIC_HEADERS:"
   isubdir/Interface1.hpp
   isubdir/Interface2.hpp)
 me_mock_expect(
@@ -314,7 +323,7 @@ me_mock_expect(
   LOG_TYPE
   VERBOSE
   CAPTION
-  "  INTERFACE_DEPENDS:"
+  "  PUBLIC_HEADER_DEPENDS:"
   iInterfaceA
   iInterfaceB)
 me_mock_expect(me_print VERBOSE "  SOURCE_DIR: ssubdir")
@@ -366,15 +375,16 @@ me_mock_expect(
   17
   CXX_STANDARD_REQUIRED
   ON)
+me_mock_expect(set_property TARGET TestUnit PROPERTY ME_COMPONENT_TYPE GENERIC)
 
 me_add_unit(
   TestUnit
-  INTERFACE_DIR
+  PUBLIC_HEADER_DIR
   isubdir
-  INTERFACES
+  PUBLIC_HEADERS
   Interface1.hpp
   Interface2.hpp
-  INTERFACE_DEPENDS
+  PUBLIC_HEADER_DEPENDS
   iInterfaceA
   iInterfaceB
   SOURCE_DIR

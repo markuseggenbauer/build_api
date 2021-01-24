@@ -5,22 +5,23 @@ include(me_internal)
 
 function(me_add_unit_internal target)
   cmake_parse_arguments(
-    "PARAMETER" "" "INTERFACE_DIR;SOURCE_DIR;TYPE"
-    "INTERFACES;INTERFACE_DEPENDS;SOURCES;SOURCE_DEPENDS" ${ARGN})
+    "PARAMETER" "" "PUBLIC_HEADER_DIR;SOURCE_DIR;TYPE"
+    "PUBLIC_HEADERS;PUBLIC_HEADER_DEPENDS;SOURCES;SOURCE_DEPENDS" ${ARGN})
 
-  if(PARAMETER_INTERFACES OR PARAMETER_INTERFACE_DEPENDS)
+  if(PARAMETER_PUBLIC_HEADERS OR PARAMETER_PUBLIC_HEADER_DEPENDS)
 
-    if(NOT PARAMETER_INTERFACE_DIR AND PARAMETER_INTERFACES)
-      set(PARAMETER_INTERFACE_DIR ".")
+    if(NOT PARAMETER_PUBLIC_HEADER_DIR AND PARAMETER_PUBLIC_HEADERS)
+      set(PARAMETER_PUBLIC_HEADER_DIR ".")
     endif()
 
-    list(TRANSFORM PARAMETER_INTERFACES PREPEND "${PARAMETER_INTERFACE_DIR}/")
+    list(TRANSFORM PARAMETER_PUBLIC_HEADERS
+         PREPEND "${PARAMETER_PUBLIC_HEADER_DIR}/")
 
-    me_print(VERBOSE "  INTERFACE_DIR: ${PARAMETER_INTERFACE_DIR}")
-    me_print_list(LOG_TYPE VERBOSE CAPTION "  INTERFACES:"
-                  ${PARAMETER_INTERFACES})
-    me_print_list(LOG_TYPE VERBOSE CAPTION "  INTERFACE_DEPENDS:"
-                  ${PARAMETER_INTERFACE_DEPENDS})
+    me_print(VERBOSE "  PUBLIC_HEADER_DIR: ${PARAMETER_PUBLIC_HEADER_DIR}")
+    me_print_list(LOG_TYPE VERBOSE CAPTION "  PUBLIC_HEADERS:"
+                  ${PARAMETER_PUBLIC_HEADERS})
+    me_print_list(LOG_TYPE VERBOSE CAPTION "  PUBLIC_HEADER_DEPENDS:"
+                  ${PARAMETER_PUBLIC_HEADER_DEPENDS})
 
   endif()
 
@@ -41,57 +42,62 @@ function(me_add_unit_internal target)
 
   add_library(${target} OBJECT ${PARAMETER_SOURCES})
 
-  if(PARAMETER_INTERFACE_DIR)
-    target_include_directories(${target} PUBLIC ${PARAMETER_INTERFACE_DIR})
+  if(PARAMETER_PUBLIC_HEADER_DIR)
+    target_include_directories(${target} PUBLIC ${PARAMETER_PUBLIC_HEADER_DIR})
   endif()
 
   if(PARAMETER_SOURCE_DIR)
     target_include_directories(${target} PRIVATE ${PARAMETER_SOURCE_DIR})
   endif()
 
-  if(PARAMETER_INTERFACE_DEPENDS)
-    target_link_libraries(${target} PUBLIC ${PARAMETER_INTERFACE_DEPENDS})
+  if(PARAMETER_PUBLIC_HEADER_DEPENDS)
+    target_link_libraries(${target} PUBLIC ${PARAMETER_PUBLIC_HEADER_DEPENDS})
   endif()
 
   if(PARAMETER_SOURCE_DEPENDS)
     target_link_libraries(${target} PRIVATE ${PARAMETER_SOURCE_DEPENDS})
   endif()
 
-  me_derive_link_target_property(${target} ${PARAMETER_INTERFACE_DEPENDS}
+  me_derive_link_target_property(${target} ${PARAMETER_PUBLIC_HEADER_DEPENDS}
                                  ${PARAMETER_SOURCE_DEPENDS})
 
   set_target_properties(${target} PROPERTIES POSITION_INDEPENDENT_CODE ON)
   set_target_properties(${target} PROPERTIES CXX_STANDARD 17
                                              CXX_STANDARD_REQUIRED ON)
 
+  me_component_type_check_not(
+    ${target} IMPLEMENTATION ${PARAMETER_PUBLIC_HEADER_DEPENDS}
+    ${PARAMETER_SOURCE_DEPENDS})
+
 endfunction()
 
 function(me_add_unit target)
-  me_print(STATUS "Unit: ${target}")
+  me_print(STATUS "Generic-Unit: ${target}")
   me_add_unit_internal(${ARGV})
+  me_set_component_type(${target} GENERIC)
 endfunction()
 
-function(me_add_unit_interface target)
+function(me_add_interface_unit target)
   me_print(STATUS "Interface-Unit: ${target}")
   me_add_unit_internal(${ARGV})
-  # TODO: add consistency check (WARNING) - must not depend (*_DEPENDS) on
-  # implementation units
+  me_set_component_type(${target} INTERFACE)
 endfunction()
 
-function(me_add_unit_implementation target)
+function(me_add_implementation_unit target)
   cmake_parse_arguments(
-    "PARAMETER" "" "INTERFACE_DIR;SOURCE_DIR;TYPE"
-    "INTERFACES;INTERFACE_DEPENDS;SOURCES;SOURCE_DEPENDS" ${ARGN})
+    "PARAMETER" "" "PUBLIC_HEADER_DIR;SOURCE_DIR;TYPE"
+    "PUBLIC_HEADERS;PUBLIC_HEADER_DEPENDS;SOURCES;SOURCE_DEPENDS" ${ARGN})
   me_print(STATUS "Implementation-Unit: ${target}")
 
-  if(PARAMETER_INTERFACES
-     OR PARAMETER_INTERFACE_DIR
-     OR PARAMETER_INTERFACES)
+  if(PARAMETER_PUBLIC_HEADERS
+     OR PARAMETER_PUBLIC_HEADER_DIR
+     OR PARAMETER_PUBLIC_HEADERS)
     me_print(FATAL_ERROR
-             "No interfaces must be defined for an implementation unit.")
+             "No PUBLIC_HEADERS must be defined for an implementation unit.")
   endif()
 
   me_add_unit_internal(${ARGV})
+  me_set_component_type(${target} IMPLEMENTATION)
 endfunction()
 
 function(me_add_component target)
@@ -110,5 +116,10 @@ function(me_add_component target)
 
   me_derive_link_target_property(${target} ${PARAMETER_IMPLEMENTS}
                                  ${PARAMETER_CONTAINS})
+
+  me_set_component_type(${target} INTEGRATION)
+
+  me_component_type_check_not(${target} IMPLEMENTATION ${PARAMETER_IMPLEMENTS})
+  me_component_type_check_not(${target} INTERFACE ${PARAMETER_CONTAINS})
 
 endfunction()
