@@ -11,7 +11,8 @@ class BuildApiConan(ConanFile):
     topics = ("C++", "build", "component")
 
     def source(self):
-        self.run("git clone https://github.com/markuseggenbauer/build_api.git; cd build_api; git checkout conan_testing")
+        git = tools.Git(folder="build_api")
+        git.clone("https://github.com/markuseggenbauer/build_api.git", "conan_testing")
 
     def build(self):
         cmake = CMake(self)
