@@ -1,4 +1,4 @@
-include_guard()
+include_guard(GLOBAL)
 
 function(me_print)
   message(${ARGN})

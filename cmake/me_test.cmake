@@ -1,4 +1,4 @@
-include_guard()
+include_guard(GLOBAL)
 
 include(me_print)
 include(me_structure)
