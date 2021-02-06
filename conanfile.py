@@ -12,7 +12,7 @@ class BuildApiConan(ConanFile):
 
     def source(self):
         git = tools.Git(folder="build_api")
-        git.clone("https://github.com/markuseggenbauer/build_api.git", "conan_testing")
+        git.clone("https://github.com/markuseggenbauer/build_api.git", "main")
 
     def build(self):
         cmake = CMake(self)
