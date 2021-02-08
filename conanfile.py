@@ -14,16 +14,12 @@ class BuildApiConan(ConanFile):
         git = tools.Git(folder="build_api")
         git.clone("https://github.com/markuseggenbauer/build_api.git", "main")
 
-    def build(self):
-        cmake = CMake(self)
-        cmake.configure(source_folder="build_api")
-        cmake.build()
-
     def package(self):
-        self.copy("*.cmake", dst="", src="cmake/bin")
-        self.copy("*.cpp", dst="", src="cmake/bin")
+        self.copy("*.cmake", dst="cmake", src="cmake")
+        self.copy("*.cpp", dst="cmake", src="cmake")
 
     def package_info(self):
         self.cpp_info.libs = ["build_api"]
         self.cpp_info.includedirs = ['.']
         self.cpp_info.build_modules.append("me_build_api.cmake")
+        self.cpp_info.builddirs = ["cmake"]
