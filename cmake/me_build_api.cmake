@@ -1,8 +1,6 @@
 include_guard(GLOBAL)
 
-if(NOT ME_CMAKE_SOURCE_DIR AND build_api_INCLUDE_DIR)
-  set(ME_CMAKE_SOURCE_DIR "${build_api_INCLUDE_DIR}/cmake")
-endif()
+set(ME_CMAKE_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
 include(me_structure)
 include(me_artifact)
