@@ -7,8 +7,8 @@ endmacro()
 include(me_test) # include DUT
 
 # setup mocks
-macro(me_add_unit)
-  me_mock_trace(me_add_unit ${ARGV})
+macro(me_add_package)
+  me_mock_trace(me_add_package ${ARGV})
 endmacro()
 
 macro(me_add_executable)
@@ -25,11 +25,11 @@ endmacro()
 
 include(me_cmake_test)
 
-me_cmake_test_begin(test_me_add_unittest)
+me_cmake_test_begin(test_me_add_packagetest)
 
 me_mock_expect(
-  me_add_unit
-  unit_unittest_name
+  me_add_package
+  package_packagetest_name
   SOURCE_DIR
   ssubdir
   SOURCES
@@ -42,17 +42,17 @@ me_mock_expect(
 
 me_mock_expect(
   me_add_executable
-  unittest_name
+  packagetest_name
   CONTAINS
   name
-  unit_unittest_name
+  package_packagetest_name
   Unit_1
   Unit_2
   Main)
 
-me_mock_expect(add_test unittest_name unittest_name)
+me_mock_expect(add_test packagetest_name packagetest_name)
 
-me_add_unittest(
+me_add_packagetest(
   name
   SOURCE_DIR
   ssubdir

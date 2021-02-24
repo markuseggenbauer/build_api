@@ -3,7 +3,7 @@ from conans import ConanFile, CMake, tools
 
 class BuildApiConan(ConanFile):
     name = "build_api"
-    version = "0.1"
+    version = "1.0"
     license = "MIT License"
     author = "Markus Eggenbauer markus.eggenbauer@gmail.com"
     url = "https://github.com/markuseggenbauer/build_api"

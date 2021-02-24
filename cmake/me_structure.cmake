@@ -3,7 +3,7 @@ include_guard(GLOBAL)
 include(me_print)
 include(me_internal)
 
-function(me_add_unit_internal target)
+function(me_add_package_internal target)
   cmake_parse_arguments(
     "PARAMETER" "" "PUBLIC_HEADER_DIR;SOURCE_DIR;TYPE"
     "PUBLIC_HEADERS;PUBLIC_HEADER_DEPENDS;SOURCES;SOURCE_DEPENDS" ${ARGN})
@@ -71,23 +71,23 @@ function(me_add_unit_internal target)
 
 endfunction()
 
-function(me_add_unit target)
-  me_print(STATUS "Generic-Unit: ${target}")
-  me_add_unit_internal(${ARGV})
+function(me_add_package target)
+  me_print(STATUS "Generic-Package: ${target}")
+  me_add_package_internal(${ARGV})
   me_set_component_type(${target} GENERIC)
 endfunction()
 
-function(me_add_interface_unit target)
-  me_print(STATUS "Interface-Unit: ${target}")
-  me_add_unit_internal(${ARGV})
+function(me_add_interface_package target)
+  me_print(STATUS "Interface-Package: ${target}")
+  me_add_package_internal(${ARGV})
   me_set_component_type(${target} INTERFACE)
 endfunction()
 
-function(me_add_implementation_unit target)
+function(me_add_implementation_package target)
   cmake_parse_arguments(
     "PARAMETER" "" "PUBLIC_HEADER_DIR;SOURCE_DIR;TYPE"
     "PUBLIC_HEADERS;PUBLIC_HEADER_DEPENDS;SOURCES;SOURCE_DEPENDS" ${ARGN})
-  me_print(STATUS "Implementation-Unit: ${target}")
+  me_print(STATUS "Implementation-Package: ${target}")
 
   if(PARAMETER_PUBLIC_HEADERS
      OR PARAMETER_PUBLIC_HEADER_DIR
@@ -96,14 +96,14 @@ function(me_add_implementation_unit target)
              "No PUBLIC_HEADERS must be defined for an implementation unit.")
   endif()
 
-  me_add_unit_internal(${ARGV})
+  me_add_package_internal(${ARGV})
   me_set_component_type(${target} IMPLEMENTATION)
 endfunction()
 
-function(me_add_component target)
+function(me_add_composition_package target)
   cmake_parse_arguments("PARAMETER" "" "" "IMPLEMENTS;CONTAINS" ${ARGN})
 
-  me_print(STATUS "Component: ${target}")
+  me_print(STATUS "Composition-Package: ${target}")
   me_print_list(LOG_TYPE VERBOSE CAPTION "  IMPLEMENTS:"
                 ${PARAMETER_IMPLEMENTS})
   me_print_list(LOG_TYPE VERBOSE CAPTION "  CONTAINS:" ${PARAMETER_CONTAINS})

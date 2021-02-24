@@ -55,9 +55,9 @@ endmacro()
 
 include(me_cmake_test)
 
-me_cmake_test_begin(test_me_add_unit_empty)
+me_cmake_test_begin(test_me_add_package_empty)
 
-me_mock_expect(me_print STATUS "Generic-Unit: TestUnit")
+me_mock_expect(me_print STATUS "Generic-Package: TestUnit")
 me_mock_expect(add_library TestUnit OBJECT ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
 me_mock_expect(set_target_properties TestUnit PROPERTIES
                POSITION_INDEPENDENT_CODE ON)
@@ -71,13 +71,13 @@ me_mock_expect(
   ON)
 me_mock_expect(set_property TARGET TestUnit PROPERTY ME_COMPONENT_TYPE GENERIC)
 
-me_add_unit(TestUnit)
+me_add_package(TestUnit)
 
 me_cmake_test_end()
 
-me_cmake_test_begin(test_me_add_interface_unit)
+me_cmake_test_begin(test_me_add_interface_package)
 
-me_mock_expect(me_print STATUS "Generic-Unit: TestUnit")
+me_mock_expect(me_print STATUS "Generic-Package: TestUnit")
 me_mock_expect(me_print VERBOSE "  PUBLIC_HEADER_DIR: .")
 me_mock_expect(
   me_print_list
@@ -103,13 +103,13 @@ me_mock_expect(
   ON)
 me_mock_expect(set_property TARGET TestUnit PROPERTY ME_COMPONENT_TYPE GENERIC)
 
-me_add_unit(TestUnit PUBLIC_HEADERS Interface1.hpp Interface2.hpp)
+me_add_package(TestUnit PUBLIC_HEADERS Interface1.hpp Interface2.hpp)
 
 me_cmake_test_end()
 
-me_cmake_test_begin(test_me_add_interface_unit_dir)
+me_cmake_test_begin(test_me_add_interface_package_dir)
 
-me_mock_expect(me_print STATUS "Generic-Unit: TestUnit")
+me_mock_expect(me_print STATUS "Generic-Package: TestUnit")
 me_mock_expect(me_print VERBOSE "  PUBLIC_HEADER_DIR: subdir")
 me_mock_expect(
   me_print_list
@@ -135,14 +135,14 @@ me_mock_expect(
   ON)
 me_mock_expect(set_property TARGET TestUnit PROPERTY ME_COMPONENT_TYPE GENERIC)
 
-me_add_unit(TestUnit PUBLIC_HEADER_DIR subdir PUBLIC_HEADERS Interface1.hpp
-            Interface2.hpp)
+me_add_package(TestUnit PUBLIC_HEADER_DIR subdir PUBLIC_HEADERS Interface1.hpp
+               Interface2.hpp)
 
 me_cmake_test_end()
 
-me_cmake_test_begin(test_me_add_interface_unit_depends)
+me_cmake_test_begin(test_me_add_interface_package_depends)
 
-me_mock_expect(me_print STATUS "Generic-Unit: TestUnit")
+me_mock_expect(me_print STATUS "Generic-Package: TestUnit")
 me_mock_expect(me_print VERBOSE "  PUBLIC_HEADER_DIR: ")
 me_mock_expect(me_print_list LOG_TYPE VERBOSE CAPTION "  PUBLIC_HEADERS:")
 me_mock_expect(
@@ -178,13 +178,13 @@ me_mock_expect(
   ON)
 me_mock_expect(set_property TARGET TestUnit PROPERTY ME_COMPONENT_TYPE GENERIC)
 
-me_add_unit(TestUnit PUBLIC_HEADER_DEPENDS InterfaceA InterfaceB)
+me_add_package(TestUnit PUBLIC_HEADER_DEPENDS InterfaceA InterfaceB)
 
 me_cmake_test_end()
 
-me_cmake_test_begin(test_me_add_unit_source)
+me_cmake_test_begin(test_me_add_package_source)
 
-me_mock_expect(me_print STATUS "Generic-Unit: TestUnit")
+me_mock_expect(me_print STATUS "Generic-Package: TestUnit")
 me_mock_expect(me_print VERBOSE "  SOURCE_DIR: .")
 me_mock_expect(
   me_print_list
@@ -209,13 +209,13 @@ me_mock_expect(
   ON)
 me_mock_expect(set_property TARGET TestUnit PROPERTY ME_COMPONENT_TYPE GENERIC)
 
-me_add_unit(TestUnit SOURCES Source1.cpp Source2.cpp)
+me_add_package(TestUnit SOURCES Source1.cpp Source2.cpp)
 
 me_cmake_test_end()
 
-me_cmake_test_begin(test_me_add_unit_source_dir)
+me_cmake_test_begin(test_me_add_package_source_dir)
 
-me_mock_expect(me_print STATUS "Generic-Unit: TestUnit")
+me_mock_expect(me_print STATUS "Generic-Package: TestUnit")
 me_mock_expect(me_print VERBOSE "  SOURCE_DIR: subdir")
 me_mock_expect(
   me_print_list
@@ -241,13 +241,13 @@ me_mock_expect(
   ON)
 me_mock_expect(set_property TARGET TestUnit PROPERTY ME_COMPONENT_TYPE GENERIC)
 
-me_add_unit(TestUnit SOURCE_DIR subdir SOURCES Source1.cpp Source2.cpp)
+me_add_package(TestUnit SOURCE_DIR subdir SOURCES Source1.cpp Source2.cpp)
 
 me_cmake_test_end()
 
-me_cmake_test_begin(test_me_add_unit_source_dir_depends)
+me_cmake_test_begin(test_me_add_package_source_dir_depends)
 
-me_mock_expect(me_print STATUS "Generic-Unit: TestUnit")
+me_mock_expect(me_print STATUS "Generic-Package: TestUnit")
 me_mock_expect(me_print VERBOSE "  SOURCE_DIR: subdir")
 me_mock_expect(
   me_print_list
@@ -293,7 +293,7 @@ me_mock_expect(
   ON)
 me_mock_expect(set_property TARGET TestUnit PROPERTY ME_COMPONENT_TYPE GENERIC)
 
-me_add_unit(
+me_add_package(
   TestUnit
   SOURCE_DIR
   subdir
@@ -306,9 +306,10 @@ me_add_unit(
 
 me_cmake_test_end()
 
-me_cmake_test_begin(test_me_add_interface_unit_dir_depends_source_dir_depends)
+me_cmake_test_begin(
+  test_me_add_interface_package_dir_depends_source_dir_depends)
 
-me_mock_expect(me_print STATUS "Generic-Unit: TestUnit")
+me_mock_expect(me_print STATUS "Generic-Package: TestUnit")
 me_mock_expect(me_print VERBOSE "  PUBLIC_HEADER_DIR: isubdir")
 me_mock_expect(
   me_print_list
@@ -377,7 +378,7 @@ me_mock_expect(
   ON)
 me_mock_expect(set_property TARGET TestUnit PROPERTY ME_COMPONENT_TYPE GENERIC)
 
-me_add_unit(
+me_add_package(
   TestUnit
   PUBLIC_HEADER_DIR
   isubdir

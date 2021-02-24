@@ -4,7 +4,7 @@ include(me_print)
 include(me_structure)
 include(me_artifact)
 
-function(me_add_unittest unit_name)
+function(me_add_packagetest package_name)
   cmake_parse_arguments("UPARAMETER" "" "SOURCE_DIR"
                         "SOURCES;SOURCE_DEPENDS;CONTAINS" ${ARGN})
 
@@ -19,15 +19,16 @@ function(me_add_unittest unit_name)
   else()
     list(APPEND UPARAMETERS SOURCE_DEPENDS)
   endif()
-  list(APPEND UPARAMETERS ${unit_name})
+  list(APPEND UPARAMETERS ${package_name})
 
-  me_add_unit(unit_unittest_${unit_name} ${UPARAMETERS})
+  me_add_package(package_packagetest_${package_name} ${UPARAMETERS})
 
   cmake_parse_arguments("EPARAMETER" "" "" "CONTAINS" ${ARGN})
 
   me_add_executable(
-    unittest_${unit_name} CONTAINS ${unit_name} unit_unittest_${unit_name}
-    ${UPARAMETER_SOURCE_DEPENDS} ${EPARAMETER_CONTAINS})
+    packagetest_${package_name} CONTAINS ${package_name}
+    package_packagetest_${package_name} ${UPARAMETER_SOURCE_DEPENDS}
+    ${EPARAMETER_CONTAINS})
 
-  add_test(unittest_${unit_name} unittest_${unit_name})
+  add_test(packagetest_${package_name} packagetest_${package_name})
 endfunction()
