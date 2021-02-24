@@ -3,5 +3,5 @@ project(PackageTest CXX)
 
 find_package(build_api)
 
-me_add_implementation_unit(example)
-me_add_unittest(example SOURCES example.cpp)
+me_add_implementation_package(example)
+me_add_packagetest(example SOURCES example.cpp)

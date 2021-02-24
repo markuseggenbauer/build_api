@@ -13,4 +13,4 @@ class BuildApiTestConan(ConanFile):
 
     def test(self):
         if not tools.cross_building(self):
-            self.run(".%sunittest_example" % os.sep)
+            self.run(".%spackagetest_example" % os.sep)
