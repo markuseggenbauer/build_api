@@ -18,7 +18,5 @@ class BuildApiConan(ConanFile):
         self.copy("*.*", dst="cmake", src="cmake")
 
     def package_info(self):
-        self.cpp_info.libs = ["build_api"]
-        self.cpp_info.includedirs = ['.']
         self.cpp_info.build_modules.append("cmake/me_build_api.cmake")
         self.cpp_info.builddirs = ["cmake"]
