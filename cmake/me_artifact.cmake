@@ -37,6 +37,6 @@ function(me_add_library target)
     TARGET ${target}
     PROPERTY ME_LINK_TARGETS)
 
-  target_link_libraries(${target} PRIVATE ${target_link_dependencies})
+  target_link_libraries(${target} PUBLIC ${target_link_dependencies})
 
 endfunction()

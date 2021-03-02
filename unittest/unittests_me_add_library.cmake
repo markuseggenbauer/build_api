@@ -85,7 +85,7 @@ me_mock_expect(
 
 me_mock_expect(get_property TARGET TestLibrary PROPERTY ME_LINK_TARGETS)
 
-me_mock_expect(target_link_libraries TestLibrary PRIVATE Unit_1 Unit_2)
+me_mock_expect(target_link_libraries TestLibrary PUBLIC Unit_1 Unit_2)
 
 set(get_property__TARGET__TestLibrary__PROPERTY__ME_LINK_TARGETS Unit_1 Unit_2)
 
