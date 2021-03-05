@@ -3,10 +3,10 @@ from conans import ConanFile, CMake, tools
 
 class MePackageConan(ConanFile):
     name = "me_package"
-    version = "1.0"
+    version = "main"
     license = "MIT License"
     author = "Markus Eggenbauer markus.eggenbauer@gmail.com"
-    url = "https://github.com/markuseggenbauer/build_api"
+    url = "https://github.com/markuseggenbauer/build_api.git", "me_package"
     description = "Enhanced cmake find_package feature."
     topics = ("C++", "build", "component", "cmake")
     exports_sources = "cmake/*"
