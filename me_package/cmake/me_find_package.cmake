@@ -8,6 +8,7 @@ endif()
 function(
     me_package_internal_get_package_metadata
     package_name
+    out_exists
     out_repo_url
     out_repo_name
     out_sub_dir
@@ -17,6 +18,11 @@ function(
 
     string(TOUPPER ${package_name} package_name_upper)
     if($CACHE{ME_PACKAGE_METADATA_${package_name_upper}_EXISTS})
+        set(
+            ${out_exists}
+            TRUE
+            PARENT_SCOPE
+        )
 
         set(
             ${out_repo_url}
@@ -63,16 +69,28 @@ function(me_package_internal_find_package_local package_name out_result)
     )
     me_package_internal_get_package_metadata(
         ${package_name}
+        package_exists
         repo_url
         repo_name
         sub_dir
         version
     )
-    if(version)
-        set(local_package_dir "$CACHE{ME_PACKAGE_LOCAL_PACKAGE_SOURCE_DIR}/${repo_name}/${sub_dir}")
+    if(package_exists)
+        set(local_package_dir "${ME_PACKAGE_LOCAL_PACKAGE_SOURCE_DIR}/${repo_name}/${sub_dir}")
         if(EXISTS "${local_package_dir}/CMakeLists.txt")
-            message(STATUS "Found local package: ${package_name} in ${local_package_dir}")
-            add_subdirectory("${local_package_dir}" ${package_name})
+            get_property(
+                sub_directories
+                DIRECTORY "${ME_PACKAGE_ROOT_DIR}"
+                PROPERTY SUBDIRECTORIES
+            )
+            if(local_package_dir IN_LIST sub_directories)
+                return()
+            endif()
+
+            message(
+                STATUS "Adding local package dependency: ${package_name} in ${local_package_dir}"
+            )
+            add_subdirectory("${local_package_dir}" ${package_name} EXCLUDE_FROM_ALL)
             if(PARAMETER_COMPONENTS OR PARAMETER_OPTIONAL_COMPONENTS)
                 foreach(component IN ITEMS ${PARAMETER_COMPONENTS})
                     add_library(${package_name}::${component} ALIAS ${component})
@@ -100,13 +118,14 @@ endfunction()
 function(me_package_internal_add_package_source package_name)
     me_package_internal_get_package_metadata(
         ${package_name}
+        package_exists
         repo_url
         repo_name
         sub_dir
         version
     )
 
-    if(version)
+    if(package_exists)
         if(NOT TARGET fetch_source.all)
             add_custom_target(fetch_source.all)
         endif()
@@ -132,16 +151,20 @@ set(me_pkg_mngr "conan")
 include(me_package_internal_${me_pkg_mngr})
 
 function(me_package_init)
-    message(DEBUG "me_package_init(${ARGV0})")
     if(ARGC EQUAL 0)
-        set(ARGV0 "${CMAKE_CURRENT_LIST_DIR}/sources")
+        set(ARGV0 "sources")
     endif()
-    set(
-        ME_PACKAGE_LOCAL_PACKAGE_SOURCE_DIR
-        "${ARGV0}"
-        CACHE BOOL "Local package source directory."
-    )
-    me_package_internal_init()
+    message(DEBUG "me_package_init(${ARGV0})")
+
+    if(NOT ME_PACKAGE_ROOT_DIR)
+        set(
+            ME_PACKAGE_ROOT_DIR
+            "${CMAKE_CURRENT_LIST_DIR}"
+            PARENT_SCOPE
+        )
+        set(ME_PACKAGE_LOCAL_PACKAGE_SOURCE_DIR "${ME_PACKAGE_ROOT_DIR}/${ARGV0}")
+        me_package_internal_init()
+    endif()
 endfunction()
 
 macro(me_find_package package_name)
