@@ -145,28 +145,23 @@ function(me_package_internal_add_package_source package_name)
     endif()
 endfunction()
 
-# API
 set(me_pkg_mngr "conan")
 
 include(me_package_internal_${me_pkg_mngr})
 
 function(me_package_init)
-    if(ARGC EQUAL 0)
-        set(ARGV0 "sources")
-    endif()
-    message(DEBUG "me_package_init(${ARGV0})")
-
-    if(NOT ME_PACKAGE_ROOT_DIR)
-        set(
-            ME_PACKAGE_ROOT_DIR
-            "${CMAKE_CURRENT_LIST_DIR}"
-            PARENT_SCOPE
-        )
-        set(ME_PACKAGE_LOCAL_PACKAGE_SOURCE_DIR "${ME_PACKAGE_ROOT_DIR}/${ARGV0}")
-        me_package_internal_init()
-    endif()
+    message(DEBUG "me_package_init()")
+    me_package_internal_init()
 endfunction()
 
+# automatic invocation on include
+if(NOT ME_PACKAGE_ROOT_DIR)
+    set(ME_PACKAGE_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}")
+    set(ME_PACKAGE_LOCAL_PACKAGE_SOURCE_DIR "${ME_PACKAGE_ROOT_DIR}/sources")
+    me_package_init()
+endif()
+
+# API
 macro(me_find_package package_name)
     message(DEBUG "me_find_package(${package_name})")
     me_package_internal_find_package_local(${package_name} result ${ARGN})
