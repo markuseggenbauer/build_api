@@ -134,7 +134,7 @@ function(me_package_internal_add_package_source package_name)
             add_custom_target(
                 "fetch_source.${repo_name}"
                 COMMAND "${GIT_EXECUTABLE}" clone "${repo_url}" -b "${version}"
-                        "$CACHE{ME_PACKAGE_LOCAL_PACKAGE_SOURCE_DIR}/${repo_name}"
+                        "${ME_PACKAGE_LOCAL_PACKAGE_SOURCE_DIR}/${repo_name}"
             )
         endif()
 
@@ -156,7 +156,7 @@ endfunction()
 
 # automatic invocation on include
 if(NOT ME_PACKAGE_ROOT_DIR)
-    set(ME_PACKAGE_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}")
+    set(ME_PACKAGE_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
     set(ME_PACKAGE_LOCAL_PACKAGE_SOURCE_DIR "${ME_PACKAGE_ROOT_DIR}/sources")
     me_package_init()
 endif()
