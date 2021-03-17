@@ -2,6 +2,12 @@ from conans import ConanFile, CMake, tools
 
 
 class MeBuildConan(ConanFile):
+    scm = {
+        "type": "git",
+        "url" : "auto",
+        "revision" : "auto",
+        "password" : os.environ.get("SECRET", None)
+    }
     name = "me_build"
     version = "main"
     license = "MIT License"
