@@ -6,8 +6,9 @@ class MeBuildConan(ConanFile):
     scm = {
         "type": "git",
         "url" : "auto",
+        "subfolder" : "me_build",
         "revision" : "auto",
-        "password" : os.environ.get("SECRET", None)
+        "password" : os.environ.get("SCM_SECRET", None)
     }
     name = "me_build"
     version = "main"
