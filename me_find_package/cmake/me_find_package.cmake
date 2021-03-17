@@ -133,8 +133,11 @@ function(me_package_internal_add_package_source package_name)
         if(NOT TARGET "fetch_source.${repo_name}")
             add_custom_target(
                 "fetch_source.${repo_name}"
-                COMMAND "${GIT_EXECUTABLE}" clone "${repo_url}" -b "${version}"
-                        "${ME_PACKAGE_LOCAL_PACKAGE_SOURCE_DIR}/${repo_name}"
+                COMMAND
+                    "${GIT_EXECUTABLE}" clone "${repo_url}"
+                    "${ME_PACKAGE_LOCAL_PACKAGE_SOURCE_DIR}/${repo_name}" && cd
+                    "${ME_PACKAGE_LOCAL_PACKAGE_SOURCE_DIR}/${repo_name}" && "${GIT_EXECUTABLE}"
+                    checkout "${version}"
             )
         endif()
 
