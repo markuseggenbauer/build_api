@@ -1,9 +1,5 @@
 include(me_mock)
 
-macro(define_property)
-    me_mock_trace(define_property ${ARGV})
-endmacro()
-
 include(me_structure) # include DUT
 
 # setup mocks

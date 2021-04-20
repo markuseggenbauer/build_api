@@ -6,14 +6,14 @@ class MeFindPackageConan(ConanFile):
     scm = {
         "type": "git",
         "url" : "auto",
-        "subfolder" : "me_build",
+        "subfolder" : "me_find_package",
         "revision" : "auto",
         "password" : os.environ.get("SCM_SECRET", None)
     }    
     name = "me_find_package"
     license = "MIT License"
     author = "Markus Eggenbauer markus.eggenbauer@gmail.com"
-    url = "https://github.com/markuseggenbauer/build_api.git", "me_find_package"
+    url = "https://github.com/markuseggenbauer/build_api.git"
     description = "Enhanced cmake find_package feature."
     topics = ("C++", "build", "component", "cmake")
     exports_sources = "cmake/*"

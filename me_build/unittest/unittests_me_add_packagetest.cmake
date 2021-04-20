@@ -1,9 +1,5 @@
 include(me_mock)
 
-macro(define_property)
-    me_mock_trace(define_property ${ARGV})
-endmacro()
-
 include(me_test) # include DUT
 
 # setup mocks
@@ -17,10 +13,6 @@ endmacro()
 
 macro(add_test)
     me_mock_trace(add_test ${ARGV})
-endmacro()
-
-macro(define_property)
-    me_mock_trace(define_property ${ARGV})
 endmacro()
 
 include(me_cmake_test)
