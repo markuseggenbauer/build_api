@@ -22,6 +22,6 @@ jobs:
       with:
         cmakeListsTxtPath: "${{ github.workspace }}/me_build/CMakeLists.txt"
         buildDirectory: "${{ github.workspace }}/../../build"
-    - name: test
-      run: |
-        cd "${{ github.workspace }}/../../build" && ctest --verbose
+    # - name: test
+    #   run: |
+    #     cd "${{ github.workspace }}/../../build" && ctest --verbose
