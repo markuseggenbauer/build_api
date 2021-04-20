@@ -13,7 +13,7 @@ class MeBuildConan(ConanFile):
     name = "me_build"
     license = "MIT License"
     author = "Markus Eggenbauer markus.eggenbauer@gmail.com"
-    url = "https://github.com/markuseggenbauer/build_api.git", "me_build"
+    url = "https://github.com/markuseggenbauer/build_api.git"
     description = "A cmake adapter for component based C++ software building"
     topics = ("C++", "build", "component", "cmake")
     exports_sources = "cmake/*"
