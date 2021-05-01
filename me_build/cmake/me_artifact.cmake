@@ -2,6 +2,7 @@ include_guard(GLOBAL)
 
 include(me_print)
 include(me_internal)
+include(me_sanitizers)
 
 function(me_add_executable target)
     cmake_parse_arguments(

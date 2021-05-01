@@ -1,0 +1,4 @@
+[submodule "me_build/externals/sanitizers-cmake"]
+	path = me_build/externals/sanitizers-cmake
+	url = git@github.com:markuseggenbauer/sanitizers-cmake.git
+	branch = master

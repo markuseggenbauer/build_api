@@ -2,6 +2,7 @@ include_guard(GLOBAL)
 
 include(me_print)
 include(me_internal)
+include(me_sanitizers)
 
 function(me_add_package_internal target)
     cmake_parse_arguments(
@@ -65,6 +66,7 @@ function(me_add_package_internal target)
     endif()
 
     add_library(${target} OBJECT ${PARAMETER_SOURCES})
+    add_sanitize_undefined(${target})
 
     if(PARAMETER_PUBLIC_HEADER_DIR)
         target_include_directories(${target} PUBLIC ${PARAMETER_PUBLIC_HEADER_DIR})
