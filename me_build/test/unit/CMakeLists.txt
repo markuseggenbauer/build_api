@@ -132,6 +132,8 @@ me_add_implementation_package(
     SOURCE_DIR src_subdir
     SOURCES independent_main.cpp
 )
+add_sanitize_address(independent_main)
+
 me_add_implementation_package(
     header_dependent_main
     SOURCE_DIR src_subdir

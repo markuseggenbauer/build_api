@@ -1,5 +1,6 @@
 # executable from empty unit
 me_add_executable(executable_from_empty_unit CONTAINS empty_unit independent_main)
+add_sanitize_address(executable_from_empty_unit)
 
 # executable from header unit
 me_add_executable(executable_from_header_unit CONTAINS header_dependent_main)
