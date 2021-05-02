@@ -40,6 +40,11 @@ parse:
       kwargs:
         COMPONENTS: '*'
         OPTIONAL_COMPONENTS: '*'
+    me_print_list:
+      kwargs:
+        LOG_TYPE: '*'
+        LOG_TYPE_ITEM: '*'
+        CAPTION: '*'
   _help_override_spec:
   - Override configurations per-command where available
   override_spec: {}

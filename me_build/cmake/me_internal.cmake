@@ -1,25 +1,23 @@
 include_guard(GLOBAL)
 
-if(NOT DEFINED ME_BUILD_UNITTEST)
-    define_property(
-        TARGET
-        PROPERTY ME_LINK_TARGETS
-        BRIEF_DOCS "Transitive link targets."
-        FULL_DOCS "List of targets a transitive link dependency exists."
-    )
+define_property(
+    TARGET
+    PROPERTY ME_LINK_TARGETS
+    BRIEF_DOCS "Transitive link targets."
+    FULL_DOCS "List of targets a transitive link dependency exists."
+)
 
-    define_property(
-        TARGET
-        PROPERTY ME_COMPONENT_TYPE
-        BRIEF_DOCS "Type of physical component [GENERIC, INTERFACE, INTEGRATION, IMPLEMENTATION]."
-        FULL_DOCS
-            "Describes what kind of component the target is: GENERIC, INTERFACE, INTEGRATION, IMPLEMENTATION.
+define_property(
+    TARGET
+    PROPERTY ME_COMPONENT_TYPE
+    BRIEF_DOCS "Type of physical component [GENERIC, INTERFACE, INTEGRATION, IMPLEMENTATION]."
+    FULL_DOCS
+        "Describes what kind of component the target is: GENERIC, INTERFACE, INTEGRATION, IMPLEMENTATION.
     This type is used for consistency checking pof the physical component structure.
     If not set treated like a GENERIC component."
-    )
-endif()
+)
 
-function(me_derive_link_target_property target)
+function(_me_derive_link_target_property target)
 
     foreach(dependency IN ITEMS ${ARGN})
 
@@ -47,11 +45,11 @@ function(me_derive_link_target_property target)
     endif()
 endfunction()
 
-function(me_set_component_type target type)
+function(_me_set_component_type target type)
     set_property(TARGET ${target} PROPERTY ME_COMPONENT_TYPE ${type})
 endfunction()
 
-function(me_component_type_check_not target type)
+function(_me_component_type_check_not target type)
     # TODO: Warning if any of ${ARGN} is component_type 'type'. This would be a pysical component
     # structure deficit
 endfunction()

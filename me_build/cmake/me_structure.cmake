@@ -4,7 +4,7 @@ include(me_print)
 include(me_internal)
 include(me_sanitizers)
 
-function(me_add_package_internal target)
+function(_me_add_package target)
     cmake_parse_arguments(
         "PARAMETER"
         ""
@@ -22,19 +22,9 @@ function(me_add_package_internal target)
         list(TRANSFORM PARAMETER_PUBLIC_HEADERS PREPEND "${PARAMETER_PUBLIC_HEADER_DIR}/")
 
         me_print(VERBOSE "  PUBLIC_HEADER_DIR: ${PARAMETER_PUBLIC_HEADER_DIR}")
+        me_print_list(LOG_TYPE VERBOSE CAPTION "  PUBLIC_HEADERS:" ${PARAMETER_PUBLIC_HEADERS})
         me_print_list(
-            LOG_TYPE
-            VERBOSE
-            CAPTION
-            "  PUBLIC_HEADERS:"
-            ${PARAMETER_PUBLIC_HEADERS}
-        )
-        me_print_list(
-            LOG_TYPE
-            VERBOSE
-            CAPTION
-            "  PUBLIC_HEADER_DEPENDS:"
-            ${PARAMETER_PUBLIC_HEADER_DEPENDS}
+            LOG_TYPE VERBOSE CAPTION "  PUBLIC_HEADER_DEPENDS:" ${PARAMETER_PUBLIC_HEADER_DEPENDS}
         )
 
     endif()
@@ -47,20 +37,8 @@ function(me_add_package_internal target)
         list(TRANSFORM PARAMETER_SOURCES PREPEND "${PARAMETER_SOURCE_DIR}/")
 
         me_print(VERBOSE "  SOURCE_DIR: ${PARAMETER_SOURCE_DIR}")
-        me_print_list(
-            LOG_TYPE
-            VERBOSE
-            CAPTION
-            "  SOURCES:"
-            ${PARAMETER_SOURCES}
-        )
-        me_print_list(
-            LOG_TYPE
-            VERBOSE
-            CAPTION
-            "  SOURCE_DEPENDS:"
-            ${PARAMETER_SOURCE_DEPENDS}
-        )
+        me_print_list(LOG_TYPE VERBOSE CAPTION "  SOURCES:" ${PARAMETER_SOURCES})
+        me_print_list(LOG_TYPE VERBOSE CAPTION "  SOURCE_DEPENDS:" ${PARAMETER_SOURCE_DEPENDS})
     else()
         set(PARAMETER_SOURCES ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
     endif()
@@ -83,32 +61,20 @@ function(me_add_package_internal target)
         target_link_libraries(${target} PRIVATE ${PARAMETER_SOURCE_DEPENDS})
     endif()
 
-    me_derive_link_target_property(
+    _me_derive_link_target_property(
         ${target} ${PARAMETER_PUBLIC_HEADER_DEPENDS} ${PARAMETER_SOURCE_DEPENDS}
     )
 
     set_target_properties(${target} PROPERTIES POSITION_INDEPENDENT_CODE ON)
     set_target_properties(${target} PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 
-    me_component_type_check_not(
+    _me_component_type_check_not(
         ${target} IMPLEMENTATION ${PARAMETER_PUBLIC_HEADER_DEPENDS} ${PARAMETER_SOURCE_DEPENDS}
     )
 
 endfunction()
 
-function(me_add_package target)
-    me_print(STATUS "Generic-Package: ${target}")
-    me_add_package_internal(${ARGV})
-    me_set_component_type(${target} GENERIC)
-endfunction()
-
-function(me_add_interface_package target)
-    me_print(STATUS "Interface-Package: ${target}")
-    me_add_package_internal(${ARGV})
-    me_set_component_type(${target} INTERFACE)
-endfunction()
-
-function(me_add_implementation_package target)
+function(_me_add_implementation_package target)
     cmake_parse_arguments(
         "PARAMETER"
         ""
@@ -126,11 +92,11 @@ function(me_add_implementation_package target)
         me_print(FATAL_ERROR "No PUBLIC_HEADERS must be defined for an implementation unit.")
     endif()
 
-    me_add_package_internal(${ARGV})
-    me_set_component_type(${target} IMPLEMENTATION)
+    _me_add_package(${ARGV})
+    _me_set_component_type(${target} IMPLEMENTATION)
 endfunction()
 
-function(me_add_composition_package target)
+function(_me_add_composition_package target)
     cmake_parse_arguments(
         "PARAMETER"
         ""
@@ -140,20 +106,8 @@ function(me_add_composition_package target)
     )
 
     me_print(STATUS "Composition-Package: ${target}")
-    me_print_list(
-        LOG_TYPE
-        VERBOSE
-        CAPTION
-        "  IMPLEMENTS:"
-        ${PARAMETER_IMPLEMENTS}
-    )
-    me_print_list(
-        LOG_TYPE
-        VERBOSE
-        CAPTION
-        "  CONTAINS:"
-        ${PARAMETER_CONTAINS}
-    )
+    me_print_list(LOG_TYPE VERBOSE CAPTION "  IMPLEMENTS:" ${PARAMETER_IMPLEMENTS})
+    me_print_list(LOG_TYPE VERBOSE CAPTION "  CONTAINS:" ${PARAMETER_CONTAINS})
 
     add_library(${target} OBJECT ${ME_CMAKE_SOURCE_DIR}/empty.cpp)
 
@@ -161,11 +115,31 @@ function(me_add_composition_package target)
         target_link_libraries(${target} PUBLIC ${PARAMETER_IMPLEMENTS})
     endif()
 
-    me_derive_link_target_property(${target} ${PARAMETER_IMPLEMENTS} ${PARAMETER_CONTAINS})
+    _me_derive_link_target_property(${target} ${PARAMETER_IMPLEMENTS} ${PARAMETER_CONTAINS})
 
-    me_set_component_type(${target} INTEGRATION)
+    _me_set_component_type(${target} INTEGRATION)
 
-    me_component_type_check_not(${target} IMPLEMENTATION ${PARAMETER_IMPLEMENTS})
-    me_component_type_check_not(${target} INTERFACE ${PARAMETER_CONTAINS})
+    _me_component_type_check_not(${target} IMPLEMENTATION ${PARAMETER_IMPLEMENTS})
+    _me_component_type_check_not(${target} INTERFACE ${PARAMETER_CONTAINS})
 
+endfunction()
+
+function(me_add_package target)
+    me_print(STATUS "Generic-Package: ${target}")
+    _me_add_package(${ARGV})
+    _me_set_component_type(${target} GENERIC)
+endfunction()
+
+function(me_add_interface_package target)
+    me_print(STATUS "Interface-Package: ${target}")
+    _me_add_package(${ARGV})
+    _me_set_component_type(${target} INTERFACE)
+endfunction()
+
+function(me_add_implementation_package)
+    _me_add_implementation_package(${ARGN})
+endfunction()
+
+function(me_add_composition_package)
+    _me_add_composition_package(${ARGN})
 endfunction()
