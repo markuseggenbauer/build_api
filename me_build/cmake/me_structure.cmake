@@ -8,7 +8,7 @@ function(me_add_package_internal target)
     cmake_parse_arguments(
         "PARAMETER"
         ""
-        "PUBLIC_HEADER_DIR;SOURCE_DIR;TYPE"
+        "PUBLIC_HEADER_DIR;SOURCE_DIR"
         "PUBLIC_HEADERS;PUBLIC_HEADER_DEPENDS;SOURCES;SOURCE_DEPENDS"
         ${ARGN}
     )
@@ -66,7 +66,6 @@ function(me_add_package_internal target)
     endif()
 
     add_library(${target} OBJECT ${PARAMETER_SOURCES})
-    add_sanitize_undefined(${target})
 
     if(PARAMETER_PUBLIC_HEADER_DIR)
         target_include_directories(${target} PUBLIC ${PARAMETER_PUBLIC_HEADER_DIR})
@@ -113,7 +112,7 @@ function(me_add_implementation_package target)
     cmake_parse_arguments(
         "PARAMETER"
         ""
-        "PUBLIC_HEADER_DIR;SOURCE_DIR;TYPE"
+        "PUBLIC_HEADER_DIR;SOURCE_DIR"
         "PUBLIC_HEADERS;PUBLIC_HEADER_DEPENDS;SOURCES;SOURCE_DEPENDS"
         ${ARGN}
     )
