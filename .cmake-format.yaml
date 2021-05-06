@@ -40,6 +40,11 @@ parse:
       kwargs:
         COMPONENTS: '*'
         OPTIONAL_COMPONENTS: '*'
+    me_print_list:
+      kwargs:
+        LOG_TYPE: '*'
+        LOG_TYPE_ITEM: '*'
+        CAPTION: '*'
   _help_override_spec:
   - Override configurations per-command where available
   override_spec: {}
@@ -197,7 +202,7 @@ markup:
   canonicalize_hashrulers: true
   _help_enable_markup:
   - enable comment markup parsing and reflow
-  enable_markup: true
+  enable_markup: false
 _help_lint: Options affecting the linter
 lint:
   _help_disabled_codes:
