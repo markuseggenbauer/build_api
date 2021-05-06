@@ -9,6 +9,8 @@ jobs:
     steps:
     - name: prepare environment
       uses: actions/checkout@v2
+      with:
+        submodules: true
     - uses: turtlebrowser/get-conan@main
     - name: configure conan
       run: |
