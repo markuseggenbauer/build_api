@@ -1,4 +1,11 @@
 include_guard(GLOBAL)
 
+include(me_build_variants)
+include(me_build_property_asan)
+include(me_build_property_tsan)
+include(me_build_property_usan)
+include(me_build_property_clangtidy)
+
 me_define_build_variant(Sanitize BUILD_PROPERTIES ASan USan)
 me_define_build_variant(SanitizeThreads BUILD_PROPERTIES TSan)
+me_define_build_variant(StaticChecks BUILD_PROPERTIES ClangTidy)
