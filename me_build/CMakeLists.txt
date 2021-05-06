@@ -7,9 +7,8 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-include(me_build)
 
-me_define_build_variant(Verification_1 BUILD_PROPERTIES ASan USan)
-me_define_build_variant(Verification_2 BUILD_PROPERTIES TSan)
+include(me_build)
+include(me_default_build_variants)
 
 add_subdirectory(test)
