@@ -25,7 +25,11 @@ function(me_define_build_variant variant_name)
         PARENT_SCOPE
     )
 
+    if(NOT TARGET all-all)
+        add_custom_target(all-all DEPENDS all)
+    endif()
     add_custom_target(all-${variant_name})
+    add_dependencies(all-all all-${variant_name})
 endfunction()
 
 function(_me_invoke_on_each_build_variant function_name target)
