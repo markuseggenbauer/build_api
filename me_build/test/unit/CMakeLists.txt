@@ -131,8 +131,8 @@ me_add_implementation_package(
     independent_main
     SOURCE_DIR src_subdir
     SOURCES independent_main.cpp
+    SOURCE_DEPENDS Threads::Threads
 )
-add_sanitize_address(independent_main)
 
 me_add_implementation_package(
     header_dependent_main

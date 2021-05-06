@@ -6,6 +6,10 @@ set(
     CACHE PATH "ME CMAKE me_build base folder." FORCE
 )
 
+include(me_build_property_asan)
+include(me_build_property_tsan)
+include(me_build_property_usan)
+include(me_build_variants)
 include(me_structure)
 include(me_artifact)
 include(me_test)

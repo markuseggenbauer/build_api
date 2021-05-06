@@ -13,6 +13,10 @@ function(_me_add_executable target)
         ${ARGN}
     )
 
+    if(PARAMETER_CONTAINS)
+        _me_build_variant_target_converter(${target} PARAMETER_CONTAINS PARAMETER_CONTAINS)
+    endif()
+
     me_print(STATUS "Executable: ${target}")
     me_print_list(LOG_TYPE VERBOSE CAPTION "  CONTAINS:" ${PARAMETER_CONTAINS})
 
@@ -39,6 +43,10 @@ function(_me_add_library target)
         ${ARGN}
     )
 
+    if(PARAMETER_CONTAINS)
+        _me_build_variant_target_converter(${target} PARAMETER_CONTAINS PARAMETER_CONTAINS)
+    endif()
+
     me_print(STATUS "Library: ${target}")
     me_print_list(LOG_TYPE VERBOSE CAPTION "  CONTAINS:" ${PARAMETER_CONTAINS})
 
@@ -57,9 +65,9 @@ function(_me_add_library target)
 endfunction()
 
 function(me_add_executable target)
-    _me_add_executable(${target} ${ARGN})
+    _me_invoke_on_each_build_variant(_me_add_executable ${target} ${ARGN})
 endfunction()
 
 function(me_add_library target)
-    _me_add_library(${target} ${ARGN})
+    _me_invoke_on_each_build_variant(_me_add_library ${target} ${ARGN})
 endfunction()

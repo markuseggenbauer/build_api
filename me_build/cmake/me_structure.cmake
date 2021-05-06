@@ -13,6 +13,18 @@ function(_me_add_package target)
         ${ARGN}
     )
 
+    if(PARAMETER_PUBLIC_HEADER_DEPENDS)
+        _me_build_variant_target_converter(
+            ${target} PARAMETER_PUBLIC_HEADER_DEPENDS PARAMETER_PUBLIC_HEADER_DEPENDS
+        )
+    endif()
+
+    if(PARAMETER_SOURCE_DEPENDS)
+        _me_build_variant_target_converter(
+            ${target} PARAMETER_SOURCE_DEPENDS PARAMETER_SOURCE_DEPENDS
+        )
+    endif()
+
     if(PARAMETER_PUBLIC_HEADERS OR PARAMETER_PUBLIC_HEADER_DEPENDS)
 
         if(NOT PARAMETER_PUBLIC_HEADER_DIR AND PARAMETER_PUBLIC_HEADERS)
@@ -84,6 +96,18 @@ function(_me_add_implementation_package target)
     )
     me_print(STATUS "Implementation-Package: ${target}")
 
+    if(PARAMETER_PUBLIC_HEADER_DEPENDS)
+        _me_build_variant_target_converter(
+            ${target} PARAMETER_PUBLIC_HEADER_DEPENDS PARAMETER_PUBLIC_HEADER_DEPENDS
+        )
+    endif()
+
+    if(PARAMETER_SOURCE_DEPENDS)
+        _me_build_variant_target_converter(
+            ${target} PARAMETER_SOURCE_DEPENDS PARAMETER_SOURCE_DEPENDS
+        )
+    endif()
+
     if(
         PARAMETER_PUBLIC_HEADERS
         OR PARAMETER_PUBLIC_HEADER_DIR
@@ -104,6 +128,14 @@ function(_me_add_composition_package target)
         "IMPLEMENTS;CONTAINS"
         ${ARGN}
     )
+
+    if(PARAMETER_IMPLEMENTS)
+        _me_build_variant_target_converter(${target} PARAMETER_IMPLEMENTS PARAMETER_IMPLEMENTS)
+    endif()
+
+    if(PARAMETER_CONTAINS)
+        _me_build_variant_target_converter(${target} PARAMETER_CONTAINS PARAMETER_CONTAINS)
+    endif()
 
     me_print(STATUS "Composition-Package: ${target}")
     me_print_list(LOG_TYPE VERBOSE CAPTION "  IMPLEMENTS:" ${PARAMETER_IMPLEMENTS})
@@ -126,20 +158,20 @@ endfunction()
 
 function(me_add_package target)
     me_print(STATUS "Generic-Package: ${target}")
-    _me_add_package(${ARGV})
-    _me_set_component_type(${target} GENERIC)
+    _me_invoke_on_each_build_variant(_me_add_package ${target} ${ARGN})
+    _me_invoke_on_each_build_variant(_me_set_component_type ${target} GENERIC)
 endfunction()
 
 function(me_add_interface_package target)
     me_print(STATUS "Interface-Package: ${target}")
-    _me_add_package(${ARGV})
-    _me_set_component_type(${target} INTERFACE)
+    _me_invoke_on_each_build_variant(_me_add_package ${target} ${ARGN})
+    _me_invoke_on_each_build_variant(_me_set_component_type ${target} INTERFACE)
 endfunction()
 
-function(me_add_implementation_package)
-    _me_add_implementation_package(${ARGN})
+function(me_add_implementation_package target)
+    _me_invoke_on_each_build_variant(_me_add_implementation_package ${target} ${ARGN})
 endfunction()
 
-function(me_add_composition_package)
-    _me_add_composition_package(${ARGN})
+function(me_add_composition_package target)
+    _me_invoke_on_each_build_variant(_me_add_composition_package ${target} ${ARGN})
 endfunction()
