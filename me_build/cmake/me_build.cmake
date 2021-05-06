@@ -1,5 +1,7 @@
 include_guard(GLOBAL)
 
+cmake_minimum_required(VERSION 3.18)
+
 set(
     ME_CMAKE_SOURCE_DIR
     "${CMAKE_CURRENT_LIST_DIR}"
