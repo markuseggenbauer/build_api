@@ -2,7 +2,7 @@ include_guard(GLOBAL)
 
 include(me_print)
 
-function(me_define_build_variant variant_name)
+function(me_add_build_variant variant_name)
     cmake_parse_arguments(
         "PARAMETER"
         ""
@@ -10,7 +10,7 @@ function(me_define_build_variant variant_name)
         "BUILD_PROPERTIES"
         ${ARGN}
     )
-    me_print(STATUS "New build-variant: ${variant_name}")
+    me_print(STATUS "Add build-variant: ${variant_name}")
 
     set(
         ME_BUILD_VARIANT_${variant_name}
