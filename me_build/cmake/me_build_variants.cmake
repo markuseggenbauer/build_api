@@ -42,8 +42,13 @@ function(_me_invoke_on_each_build_variant function_name target)
             )
         endforeach()
         set_target_properties(
-            ${target}-${variant_name} PROPERTIES EXCLUDE_FROM_ALL true OUTPUT_NAME
-                                                                       ${variant_name}/${target}
+            ${target}-${variant_name}
+            PROPERTIES
+                EXCLUDE_FROM_ALL true
+                LIBRARY_OUTPUT_DIRECTORY ${variant_name}
+                ARCHIVE_OUTPUT_DIRECTORY ${variant_name}
+                RUNTIME_OUTPUT_DIRECTORY ${variant_name}
+                OUTPUT_NAME ${target}
         )
         add_dependencies(all-${variant_name} ${target}-${variant_name})
     endforeach()
